@@ -1,13 +1,13 @@
-# expressYeaself
-An open source predictive model of protein expression in yeast, written in Python.
+#ExpressYeaself
+An open source predictive model of protein Expression in yeast, written in Python.
 
 ## Summary
 
-expressYeaself is a ...
+ExpressYeaself is a ...
 
 ## Configuration
 
 
 ## License
 
-expressYeaself is licensed under the [MIT license](https://github.com/yeastpro/expressYeaself/blob/master/README.md). 
+ExpressYeaself is licensed under the [MIT license](https://github.com/yeastpro/ExpressYeaself/blob/master/README.md). 
