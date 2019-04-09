@@ -1,4 +1,4 @@
-name: environment
+name: yeast
 channels:
   - defaults
 dependencies:
