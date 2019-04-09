@@ -2,53 +2,35 @@
 
 ## Background
 
-Transcription factors are proteins that regulate the transcription of genes (which is their copying into RNA 
-on the way to making a protein). These factors ensure that the right genes are expressed in the right cells 
-at the right time, by turning specific genes "on" or "off" by binding to nearby DNA. A transcription factor 
-binds to DNA at a certain target sequence. Once bound, the factor can make it easier or more difficult for 
-RNA polymerase to bind to the promoter of the gene.
+Transcription factors are proteins that regulate the rate of transcription of DNA into mRNA, the polynucleotides needed to express proteins. These factors ensure that the right genes are expressed in the right cells at the right time. This is controlled through the turning 'on' or 'off' of specific genes by binding to DNA upstream of the gene at a certain target sequence. Once bound, the factor can make it easier or more difficult for RNA polymerase to bind to the promoter of the gene and transcribe it into mRNA.
 
-Protein expression refers to the way in which proteins are synthesized, modified and regulated. In the case 
-of this project… [Biological background]
+Protein expression refers to the way in which proteins are synthesized, modified and regulated. In the case of this project… [more biological background]
 
-Determining the heterologous protein expression in eukaryotes, such as yeast, has been an ongoing challenge 
-in research. However, with a greater understanding of transcription factors, it should be possible to 
-manipulate and fine-tune levels of expression. Ultimately, this aids in improving the efficiency and reducing 
-the cost and environmental burden of producing necessary biopharmaceuticals, such as insulin.
+Determining the heterologous protein expression in eukaryotes, such as yeast, has been an ongoing challenge in research. However, with a greater understanding of transcription factors, it should be possible to manipulate and fine-tune levels of expression. Ultimately, this aids in improving the efficiency and reducing the cost and environmental burden of producing necessary biopharmaceuticals, such as insulin.
 
-In the past few years, there has been a collective effort to systematically explore these transcription 
-factors and their impacts using natural and synthetic biology. This has generated millions of data points 
-which can now be integrated together to identify transcriptional motifs, sequences, and positions, using 
-machine learning techniques. This allows the determination of the transcription factors that have the 
-greatest impact on protein expression, which can then be used to develop an optimized predictive model.
+In the past few years, there has been a collective effort to systematically explore these transcription factors and their impacts using natural and synthetic biology. This has generated millions of data points which can now be integrated together to identify transcriptional motifs, sequences, and positions, using machine learning techniques. This allows the determination of the transcription factors that have the greatest impact on protein expression, which can then be used to develop an optimized predictive model.
 
 ## Objectives
 
-Through predictive modeling, _ExpressYeaself_ aims to develop a greater understanding of protein expression 
-in yeast based on the configurations of transcription factors.
+Through predictive modeling, _ExpressYeaself_ aims to develop a greater understanding of protein expression in yeast based on the configurations of transcription factors.
 
 ## Components
 
-(Flow Chart here)
+(Flow Chart of how software works here, including information about the layers and parametrization.)
 
 ### Data cleaning
- - _ExpressYeaself_ will combine publicly available data from www.yeastract.com, yetfasco.ccbr.utoronto.ca/, 
-     - Combined existing datasets will be used as the training data
+_ExpressYeaself_ will use combined publicly available data from www.yeastract.com, yetfasco.ccbr.utoronto.ca/ and www.yestss.org/ as training data. This combination will require some cleaning to ensure uniformity, as well as encoding of gene sequences. 
 
 ### Cross-Validation of existing models
- - Regularization the motif sequences
- - Pair transcription factor effects with protein expressions
+Existing models developed by Carl G. de Boer _et al._ will be cross validate. We will also perform the:  
+  
+* Regularization the motif sequences  
+* Pair transcription factor effects with protein expressions
 
-### Models
- - Build model
-     - Most likely will employ a convolutional neural network (CNN) using training data 
- - Test CNN
-     - Using testing data from www.yeastract.com and other associated databases
-     - Compare to experimental values
+### Predictive Models
+Most likely will employ a convolutional neural network (CNN) trained on data as used by Carl G. de Boer in his work on [cis-regulatory models](https://github.com/Carldeboer/CisRegModels). Our model will be tested on the combined data from www.yeastract.com and other associated databases, with comparison to experimental values.
 
-### Implications
+## Implications
 
-Better understanding of genetic structural motifs that affect protein expression in yeast will 
-eventually allow thevprocess of protein synthesis for the development of _human_ therapeutics (such as 
-insulin) to be greatly improved, with respect to time, cost and efficiency.
+Better understanding of genetic structural motifs that affect protein expression in yeast will eventually allow the process of protein synthesis for the development of _human_ therapeutics (such as insulin) to be greatly improved with respect to time, cost and efficiency.
  
