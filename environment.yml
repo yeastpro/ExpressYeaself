@@ -1,4 +1,4 @@
-name: env_expressyeaself
+name: environment
 channels:
   - defaults
 dependencies:
