@@ -7,7 +7,7 @@ dependencies:
   - backcall=0.1.0
   - blas=1.0
   - bleach=3.1.0
-  - ca-certificates=2019.1.2
+    #  - ca-certificates=2019.1.2
   - certifi=2019.3.9
   - cycler=0.10.0
   - dbus=1.13.6
