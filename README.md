@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/yeastpro/ExpressYeaself.svg?branch=master)](https://travis-ci.com/yeastpro/ExpressYeaself)
-
+[![Coverage Status](https://coveralls.io/repos/github/yeastpro/ExpressYeaself/badge.svg?branch=master)](https://coveralls.io/github/yeastpro/ExpressYeaself?branch=master)
 
 # ExpressYeaself  
 An open source predictive model of protein Expression in yeast, written in Python.
