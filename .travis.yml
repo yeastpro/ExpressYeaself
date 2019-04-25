@@ -38,6 +38,6 @@ after_success:
     - coveralls
 
 notifications:
-    email: true
+    email: false
 
 
