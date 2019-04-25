@@ -26,8 +26,8 @@ install:
   - pip install pytest
   - pip install flake8
   - pip install -r requirements.txt
-  - yes|conda env create -f environment.yml
-  - source activate yeast 
+    #  - yes|conda env create -f environment.yml
+    #  - source activate yeast 
     
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$(pwd)
