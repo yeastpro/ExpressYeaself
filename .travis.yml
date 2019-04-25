@@ -17,8 +17,7 @@ before_install:
       #    - chmod +x miniconda.sh
       #    - ./miniconda.sh -b -p "$PWD/miniconda/"
       #    - export PATH="$PWD/miniconda/bin/:$PATH"
-    - yes|conda update conda
-      # >/dev/null
+      #    - yes|conda update conda > /dev/null
 
 # install packages necessary for CI test, set up env
 install:
