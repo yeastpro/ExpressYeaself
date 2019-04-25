@@ -1,2 +1,13 @@
 language: python
 sudo: no
+
+install:
+    - yes|conda env create -f environment.yml>/dev/null
+    - source activate yeast
+
+branches:
+    only:
+    - master
+
+notifications:
+    email: true
