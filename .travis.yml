@@ -26,13 +26,14 @@ branches:
     - master
 
 before_script:
-#    -"flake8 speedcom"
+#    -"flake8 expressyeaself"
     - export KERAS_BACKEND=tensorflow
 
 script:
     #    - make build
-    - py.test coveralls/tests.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
-    
+    #    - py.test coveralls/tests.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
+    - py.test -s --pyargs expressyeaself --cov-report term-missing --cov=expressyeaself --cov-config .coveragerc
+
 after_success:
     - coverage report
     - coveralls
