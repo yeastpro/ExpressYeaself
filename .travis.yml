@@ -1,13 +1,27 @@
 language: python
+
 sudo: no
 
+python:
+    - '3.6'
+
+env:
+    global:
+    - KERAS_BACKEND=tensorflow
+
 install:
-    - yes|conda env create -f environment.yml>/dev/null
+    - yes|conda env create -f environment.yml
     - source activate yeast
 
 branches:
     only:
     - master
 
+after_success:
+    - coverage report
+    - coveralls
+
 notifications:
     email: true
+
+
