@@ -2,7 +2,7 @@ name: yeast
 channels:
   - defaults
 dependencies:
-  - appnope=0.1.0
+    #  - appnope=0.1.0
   - attrs=19.1.0
   - backcall=0.1.0
   - blas=1.0
