@@ -9,6 +9,14 @@ env:
     global:
     - KERAS_BACKEND=tensorflow
 
+before_install:
+    #install miniconda
+    - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+    - chmod +x miniconda.sh
+    - ./miniconda.sh -b -p "$PWD/miniconda/"
+    - export PATH="$PWD/miniconda/bin/:$PATH"
+    - yes|conda update conda>/dev/null
+
 install:
     - yes|conda env create -f environment.yml
     - source activate yeast
