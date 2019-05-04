@@ -1,3 +1,5 @@
+bowtie2
+jupyter
 numpy
 pandas
 tensorflow
