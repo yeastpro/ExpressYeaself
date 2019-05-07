@@ -1,13 +1,15 @@
+# Technology Review #2
+-----------------------------------------------------------------------------------
 ## Technology Review of Python open source neural network and deep learning libraries
 
 _The features of the following packages are presented in bullet point format._
 
 #### Keras:
  - High level API capable of running on top of TensorFlow, Microsoft Cognitive Toolkit, Theano, or PlaidML
- - user-friendly, modular, extensible
- - interface rather than standalone machine-learning framework
- - more intuitive and high level, so easier to develop deep learning models regardless of computational backend
- - commonly used neural-network building blocks such as layers, objectives, activation functions, optimizers
+ - User-friendly, modular, extensible
+ - Interface rather than standalone machine-learning framework
+ - More intuitive and high level, so easier to develop deep learning models regardless of computational backend
+ - Commonly used neural-network building blocks such as layers, objectives, activation functions, optimizers
  - Tools to work with image and text-based data
  - Mainly supports standard neural networks, CNNs, RNNs, Bayesian, RBM/DBNs
  - Supported by major cloud platforms
