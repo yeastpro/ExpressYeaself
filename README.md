@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/yeastpro/ExpressYeaself/badge.svg?branch=master)](https://coveralls.io/github/yeastpro/ExpressYeaself?branch=master)
 
 # ExpressYeaself  
-An open source predictive model of protein Expression in yeast, written in Python.
+An open source predictive model of protein expression in yeast, written in Python.
 
 ## Summary
 
