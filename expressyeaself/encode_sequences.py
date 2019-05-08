@@ -44,6 +44,7 @@ def encode_sequence_with_method(promoter_seq, method):
 	if method == 'One-Hot':
 		encoded_seq = one_hot_encode_sequence(promoter_seq)
 
+
 	return encoded_seq
 
 def one_hot_encode_sequence(promoter_seq):
