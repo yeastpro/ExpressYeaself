@@ -23,8 +23,8 @@ def test_extract_scaffold_seqs():
 		# Put tab separated ID and seq in a list
 		scaff_data = line.rstrip().split("\t")
 		for element in scaff_data:
-			assert isinstance(element, str), 'Either the ID or sequence on\
-				line %s is not a string.'
+			assert isinstance(element, str), 'Either the ID or sequence on \
+			line %s is not a string.'
 
 	return
 
@@ -41,8 +41,18 @@ def test_insert_seq_into_scaffold():
 		complete = insert_seq_into_scaffold(scaff, oligo)
 	except Excpetion as e:
 		assert isinstance(e, TypeError)
-	assert isinstance(complete, str), 'TypeError: Function not outputting a\
+	assert isinstance(complete, str), 'TypeError: Function not outputting a \
 	string.'
-	assert len(complete) == len(scaff), ''
+	assert len(complete) == len(scaff), 'Function output sequence not the \
+	same length as the input scaffold sequence.'
+
+	return
+
+def test_insert_all_seq_into_one_scaffold():
+	"""
+	Tests the function that inserts mutliple olignonucleotide sequences
+	from an input file into a single scaffold sequence and generates
+	an output file containing all of the new unique promoter sequences.
+	"""
 
 	return
