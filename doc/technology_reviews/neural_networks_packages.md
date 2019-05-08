@@ -66,7 +66,8 @@ networks
  - Supported by major cloud platforms
  - Supports CNNs, RNNs
  
-_Based on these features, our group will most likely work with Keras. Keras and Tensorflow support the most types of neural networks, 
-however, Keras is more user-friendly, has higher functionality, is faster and allows for greater manipulation of image and text-based 
-data._
+_Based on these features, our group will most likely use Keras. Keras and Tensorflow support the most types of neural networks,
+however, Keras is more user-friendly, has higher functionality, is faster and allows for greater manipulation of image and
+text-based data. We will use Keras on a Tensorflow backend, as opposed to Theano, because it has additional features
+including model visualization, feature columns and allows for parallel network training. Ultimately, it is also more flexible and faster._
 
