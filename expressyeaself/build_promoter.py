@@ -100,5 +100,30 @@ def insert_all_seq_into_one_scaffold(scaff_seq, oligo_infile):
 	must be a string.'
 
 	# Functionality
+	infile = open(oligo_infile, 'r')
+
 
 	return
+
+def remove_flanks_from_oligo(oligo_seq):
+	"""
+	Removes the flanking sequences from the oligonucleotide sequences
+	and returns the variable 80-mer sequence.
+	The input sequence will be of the form:
+		TGCATTTTTTTCACATC-(variable 80-mer seq)-GTTACGGCTGTT
+	where the constant flank regions exist purely for in-lab sequencing
+	purposes and aren't needed for insertion into a scaffold sequence.
+
+	Args:
+	-----
+		oligo_seq (str) -- the input oligonucleotide sequence in the
+							form as specified above.
+	Returns:
+	-----
+		80mer_seq (str) -- the variable 80-mer sequence of the input
+							oligonucleotide resulting from removing
+							the constant flanking sequences.
+	"""
+	assert isinstance(oligo_seq, str), 'Input sequence must be a string'
+	assert len(oligo_seq) == 110, 'Input sequence must be of length 110'
+	assert oligo_seq.startswith()
