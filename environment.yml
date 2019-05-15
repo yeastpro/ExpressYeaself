@@ -3,13 +3,13 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - appnope=0.1.0
+    #  - appnope=0.1.0
   - attrs=19.1.0
   - backcall=0.1.0
   - blas=1.0
   - bleach=3.1.0
     #  - bowtie2=2.3.5
-  - ca-certificates=2019.1.2
+    #  - ca-certificates=2019.1.2
   - certifi=2019.3.9
   - cycler=0.10.0
     #  - dbus=1.13.6
