@@ -3,6 +3,7 @@ This script contains functions to organize and split up data based
 on several experimental parameters.
 """
 import os
+import matplotlib as plt
 import pandas as pd
 import xlrd
 
@@ -39,3 +40,38 @@ def split_scaffolds_by_type(infile):
 		outfile.close()
 
 	return
+
+def check_oligonucleotide_flanks(seq_infile):
+	"""
+	Checks that all the oligonucleotide sequences in an input file
+	consist of the same sequences that flank the variable 80-mer
+	sequence. i.e. all sequences in the input file should be of the
+	form:
+		TGCATTTTTTTCACATC-(variable 80-mer seq)-GTTACGGCTGTT
+	These flanking sequences are for in-lab sequencing purposes only,
+	so can be discarded when the 80-mer variable sequences are
+	inserted into the a scaffold sequence.
+
+	Args:
+	-----
+		seq_infile (str) -- the absolute path of the input file
+							containing all of the oligonucleotide
+							sequences to be checked, and their
+							expression level values (tab separated).
+	Returns:
+	-----
+		result (bool) -- if True, all oligonucleotides contain the
+							the appropriate flanks.
+	"""
+	flank_A = 'TGCATTTTTTTCACATC'
+	flank_B = 'GTTACGGCTGTT'
+	infile = open(seq_infile, 'r')
+	for line in infile:
+		data = line.rstrip().split("\t")
+		seq = data[0]
+		if seq.startswith(flank_A) and seq.endswith(flank_B):
+			pass
+		else:
+			return False
+			
+	return True
