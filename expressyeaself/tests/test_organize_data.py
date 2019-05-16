@@ -11,3 +11,18 @@ def test_split_scaffolds_by_type():
 	"""
 
 	return
+
+def test_create_proxy_one_hot_data():
+	"""
+	Tests the function that
+	"""
+
+	return
+
+def test_pull_homogenous_sequences():
+	"""
+	Tests the function that pulls all sequences of modal length
+	from an input file of sequences and returns
+	"""
+
+	return
