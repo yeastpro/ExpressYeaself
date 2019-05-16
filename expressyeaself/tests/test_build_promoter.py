@@ -56,3 +56,19 @@ def test_insert_all_seq_into_one_scaffold():
 	"""
 
 	return
+
+def test_remove_flanks_from_seq():
+	"""
+	Tests the function that removes the flanking regions from the
+	oligonucleotide sequence in either the Abf1TATA or pTpA libraries.
+	"""
+
+	return
+
+def test_remove_flanks_from_all_seqs():
+	"""
+	Tests the function that removes the constant flanking sequences
+	from all sequences in an input file.
+	"""
+
+	return
