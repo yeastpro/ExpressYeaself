@@ -29,7 +29,6 @@ def test_one_hot_encode_sequence():
 		assert isinstance(e, TypeError)
 	assert one_hot_seq == [[1,0,0,0],[1,0,0,0],[1,0,0,0]]
 
-
 	return
 
 def test_resize_array():
@@ -70,7 +69,5 @@ def test_resize_array():
 	except Exception as e:
 		assert isinstance(e, TypeError)
 	assert out_4 = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1],[0,0,0,0]]
-
-
 
 	return
