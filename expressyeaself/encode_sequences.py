@@ -17,12 +17,14 @@ def encode_sequence_with_method(promoter_seq, method):
 	Args:
 	-----
 		promoter_seq (str) -- the promoter sequence to be encoded.
-		method (str)       -- the method by which the sequence should be
-								encoded. Must choose from: 'One-Hot'.
+
+		method (str) -- the method by which the sequence should be
+		encoded. Must choose from: 'One-Hot'.
+
 	Returns:
 	-----
 		encoded_seq (list) -- the nucleotide sequence encoded by the
-								specified method.
+		specified method.
 	"""
 	# Assertions
 	assert isinstance(promoter_seq, str), 'TypeError: Input nucleotide \
@@ -38,9 +40,8 @@ def encode_sequence_with_method(promoter_seq, method):
 	    if i not in BASES:
 	        non_ATGC_indices.append(index) # Appends list of incorrect indices
 	if len(non_ATGC_indices) is not 0:
-	    raise Exception('Input nucleotide sequence contains a non ATGC base at \
-		string indices %s' %(non_ATGC_indices))
-
+	    raise Exception('Input nucleotide sequence contains a non ATGC base \
+		at string indices %s' %(non_ATGC_indices))
 	# Functionality
 	if method == 'One-Hot':
 		encoded_seq = one_hot_encode_sequence(promoter_seq)
@@ -55,11 +56,11 @@ def one_hot_encode_sequence(promoter_seq):
 	Args:
 	-----
 		promoter_seq (str)	-- the promoter sequence to be encoded.
-
+		
 	Returns:
 	-----
 		one_hot_seq (str) -- the One-Hot encoded nucleotide sequence
-								as a 2D array.
+		as a 2D array.
 	"""
 	# Assertions
 	assert isinstance(promoter_seq, str), 'TypeError: Input nucleotide \
@@ -73,7 +74,6 @@ def one_hot_encode_sequence(promoter_seq):
 	if len(non_ATGC_indices) is not 0:
 	    raise Exception('Input nucleotide sequence contains a non ATGC base at \
 		string indices %s' %(non_ATGC_indices))
-
 	# Functionality
 	one_hot_seq = []
 	for nuc in promoter_seq:
@@ -101,16 +101,17 @@ def resize_array(input_array, max_length=294, edit_front=True):
 	Args:
 	-----
 		input_array (list) 	-- the one-hot encoded binary 2D array
-								to resize.
+		to resize.
+
 		max_length (int)	-- the length to resize the array to.
+
 		edit_front (bool)	-- whether to add/remove binary base
-								vectors from the front or back of
-								the array.
+		vectors from the front or back of the array.
+
 	Returns:
 	-----
 		input_array (list) 	-- the resized array of dimensions
-										((max_length)x4)
-
+		(max_length)x4.
 	"""
 	# Assertions
 	assert isinstance(input_array, list), 'Input array must be a list.'
@@ -143,4 +144,4 @@ def resize_array(input_array, max_length=294, edit_front=True):
 				input_array.append(null_vect)
 			return input_array
 
-	return None
+	return
