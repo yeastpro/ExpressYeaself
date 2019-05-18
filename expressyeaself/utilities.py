@@ -2,6 +2,7 @@
 This script contains utility functions that are useful in areas
 of the project.
 """
+import datetime as dt
 import gzip
 
 def smart_open(filename, mode='rt'):
@@ -20,7 +21,7 @@ def smart_open(filename, mode='rt'):
 		'a', 'ab', 'w', 'wb', 'x' or 'xb' for binary files,
 		and 'rt', 'at', 'wt', or 'xt' for text files.
 		Default: 'rt'.
-		
+
 	Returns:
 	-----
 		opened_file (file type) -- the opened file.
@@ -38,3 +39,23 @@ def smart_open(filename, mode='rt'):
 		file = open(filename,mode);
 
 	return file
+
+def get_time_stamp():
+	"""
+	Creates a unique time stamp number containing no other character
+	than digits 0~9.
+	For instance:
+		'2019-05-17 17:04:19.923192' ---> '20190517170419923192'
+	Args:
+	-----
+		-
+	Returns:
+	-----
+		time_stamp (str) -- a unique numerical string of the
+		current time.
+	"""
+	time_stamp = str(dt.datetime.now())
+	time_stamp = time_stamp.replace(' ', '').replace('-', '')
+	time_stamp = time_stamp.replace('.', '').replace(':', '')
+
+	return time_stamp
