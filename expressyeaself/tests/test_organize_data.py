@@ -19,7 +19,7 @@ def test_create_proxy_one_hot_data():
 
 	return
 
-def test_pull_homogenous_sequences():
+def test_pull_homogenous_seqs():
 	"""
 	Tests the function that pulls all sequences of modal length
 	from an input file of sequences and returns
