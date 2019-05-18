@@ -10,9 +10,13 @@ import xlrd
 
 def split_scaffolds_by_type(infile):
 	"""
-	Splits the scaffold data found in an excel file up by scaffold
-	type, and outputs the scaffold ID and sequence (tab separated) of
-	each type to different output files.
+	Splits the scaffold data contained within an Excel file
+	found at https://www.biorxiv.org/highwire/filestream/85247/
+	field_highwire_adjunct_files/1/224907-2.xlsxin by scaffold
+	type, creating different output files for each type that
+	contain all the scaffold IDs and sequences (tab separated).
+	Output files are created in the ExpressYeaself/example
+	directory.
 
 	Args:
 	-----
@@ -91,8 +95,7 @@ def check_oligonucleotide_flanks(seq_infile, scaffold_type):
 	incorrect_lines = []
 	for line in infile:
 		line_number += 1
-		data = line.rstrip().split("\t")
-		seq = data[0]
+		seq, exp_level = separate_seq_and_el_data(line)
 		if seq.startswith(flank_A) and seq.endswith(flank_B):
 			pass
 		else:
@@ -124,7 +127,7 @@ def create_proxy_one_hot_data(data_size=100, scaffold_type='pTpA'):
 	"""
 	return
 
-def pull_homogeneous_sequences(infile, outfile, scaffold_type=None):
+def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
 	"""
 	Pulls all sequences of the modal length (i.e. 110 bp for pTpA-type
 	sequences and 115 bp for Abf1TATA-type) from an input file and
@@ -132,57 +135,118 @@ def pull_homogeneous_sequences(infile, outfile, scaffold_type=None):
 
 	Args:
 	-----
-		infile (str) -- the absolute pathname of the input file
+		input_seqs (str) -- the absolute pathname of the input file
 		containing all of the raw oligonucleotide sequences and
 		their expression levels, tab separated.
 
-		outfile (str) -- the absolute pathname of the output file
-		containing the sequences of modal length.
-
-		scaffold_type (str) -- the scaffold type (pTpA or Abf1TATA)
-		in which the expression levels for the sequences in the
-		input file were measured. If None, the modal length is
-		calculated manually.
+		scaffold_type (str) -- the scaffold type (pTpA or Abf1TATA
+		for which the modal length is known to be 110 and 115
+		respectively) in which the expression levels for the
+		sequences in the input file were measured. If None, the
+		modal length is calculated manually. Default: None.
 
 	Returns:
 	-----
-		None
+		absolute_path (str) -- the absolute pathname of the output
+		file containing the sequences of modal length.
 	"""
 	# Assertions
-	assert isinstance(infile, str), 'Input file pathname must be a string.'
-	assert isinstance(outfile, str), 'Output file pathname must be a string.'
-	assert os.path.isfile(infile), 'Input file does not exist!'
+	assert isinstance(input_seqs, str), 'Input file pathname must be a string.'
+	assert os.path.isfile(input_seqs), 'Input file does not exist!'
 	assert isinstance(scaffold_type, str), 'Scaffold type must be passed as a \
 	string.'
 	assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Scaffold \
 	type must be specified as either pTpA or Abf1TATA, or else unspecified \
 	(takes value of None).'
 	# Functionality
-	input_seqs = smart_open(infile, 'rt')
-	output_seqs = smart_open(outfile, 'wt')
+	# Defining the path name of the output file.
+	relative_path = '../example/'
+	time_stamp = get_time_stamp()
+	if scaffold_type is None:
+		relative_path += ('other_scaffolds/' + time_stamp +
+			'_homogeneous_seqs.txt')
+	else:
+		relative_path += (scaffold_type + '_data/' + time_stamp + '_' +
+			scaffold_type + '_homogeneous_seqs.txt')
+	absolute_path = os.path.join(os.getcwd(), relative_path)
+	# Open the input and output files.
+	input_seqs = smart_open(input_seqs, 'rt')
+	output_seqs = smart_open(absolute_path, 'wt')
 	# Retrieve modal length for sequences in input file.
 	if scaffold_type == 'pTpA':
 		modal_length = 110
 	elif scaffold_type == 'Abf1TATA':
 		modal_length == 115
 	else:
-		seq_lengths = []
-		for line in input_seqs:
-			data = line.rstrip().split('\t')
-			seq = data[0]
-			seq_lengths.append(len(seq))
-		modal_length = max(set(seq_lengths), key=seq_lengths.count)
+		_, _, modal_length = get_max_min_mode_length_of_seqs(input_seqs)
 	# Find seqs in input file w/ modal length and write them to output file
 	for line in input_seqs:
 		if line is None or line == "" or line[0]=="#":
 			continue
-		data = line.rstrip().split('\t')
-		seq = data[0]
+		seq, exp_level = separate_seq_and_el_data(line)
 		if len(seq) == modal_length:
 			output_seqs.write(line + '\r\n')
 		else:
 			continue
+	# Close the input and output files.
 	input_seqs.close()
 	output_seqs.close()
 
-	return
+	return absolute_path
+
+def separate_seq_and_el_data(line):
+	"""
+	Takes a string containing a nucleotide sequence and its expression
+	level (el) - tab separated - and returns the sequence as a string
+	and the expression level as a float.
+
+	Args:
+	-----
+		line (str) -- the input line containing the sequence and
+		expression level (tab separated) to be separated.
+
+	Returns:
+	-----
+		seq (str) -- the nucleotide sequence.
+
+		exp_level (float) -- the expression level of the sequence.
+	"""
+	# Assertions
+	assert isinstance(line, str), 'Input line must be passed as a string.'
+	assert line.count('\t') == 1, 'Input line must contain only 2 types of \
+	data, separated by 1 tab.'
+	# Functionality
+	data = line.rstrip().split('\t')
+	seq = data[0]
+	try:
+		exp_level = float(data[1])
+	except ValueError:
+		raise ValueError('Second data element must be a the string \
+		representation of an integer or float')
+
+	return seq, exp_level
+
+def get_max_min_mode_length_of_seqs(input_seqs):
+	"""
+	Returns the maximum, minimum, and modal length of the sequences
+	in a file containing input sequences.
+
+	Args:
+	-----
+		input_seqs (str) -- the absolute path of the file containing
+		the input sequences and their expression levels, tab separated.
+
+	Returns:
+	-----
+		max_length (int) -- the length of the longest sequence in the
+		input file.
+	"""
+	seq_lengths = []
+	for line in input_seqs:
+		seq, exp_level = separate_seq_and_el_data(line)
+		seq_lengths.append(len(seq))
+	max_length = max(seq_lengths)
+	min_length = min(seq_lengths)
+	modal_length = max(set(seq_lengths), key=seq_lengths.count)
+
+	return max_length, min_length, modal_length
