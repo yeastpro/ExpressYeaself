@@ -6,6 +6,7 @@ import os
 import matplotlib as plt
 import pandas as pd
 from utilities import smart_open as smart_open
+from utilities import get_time_stamp as get_time_stamp
 import xlrd
 
 def split_scaffolds_by_type(infile):
@@ -38,11 +39,11 @@ def split_scaffolds_by_type(infile):
 		# Create a new output file for each unique type of scaffold
 		relative_path = '../example/' + type + '_scaffolds.txt'
 		absolute_path = os.path.join(os.getcwd(), relative_path)
-		outfile = smart_open(absolute_path, 'wt')
+		outfile = smart_open(absolute_path, 'w')
 		# Reduce scaffold data to only data of the current type
 		type_df = scaff_df[scaff_df['Scaffold type'] == type]
 		for index, row in type_df.iterrows():
-			outfile.write(index + '\t' + row['Sequence'] + '\r\n')
+			outfile.write(index + '\t' + row['Sequence'] + '\n')
 		outfile.close()
 
 	return
@@ -53,10 +54,10 @@ def check_oligonucleotide_flanks(seq_infile, scaffold_type):
 	consist of the same sequences that flank the variable 80-mer
 	sequence. i.e. all sequences in the input file should be of the
 	form:
-	TGCATTTTTTTCACATC-(variable 80-mer seq)-GTTACGGCTGTT
+	TGCATTTTTTTCACATC-(variable region)-GTTACGGCTGTT
 	Whereas the input sequences measured in the Abf1TATA scaffold
 	will be of the form:
-	TCACGCAGTATAGTTC-(variable 80-mer sequence)-GGTTTATTGTTTATAAAAA
+	TCACGCAGTATAGTTC-(variable region)-GGTTTATTGTTTATAAAAA
 	These flanking sequences are for in-lab sequencing purposes only,
 	so can be discarded when the 80-mer variable sequences are
 	inserted into the a scaffold sequence.
@@ -90,11 +91,14 @@ def check_oligonucleotide_flanks(seq_infile, scaffold_type):
 	elif scaffold_type == 'Abf1TATA':
 		flank_A = 'TCACGCAGTATAGTTC'
 		flank_B = 'GGTTTATTGTTTATAAAAA'
-	infile = smart_open(seq_infile, 'rt')
+	infile = smart_open(seq_infile, 'r')
 	line_number = 0
 	incorrect_lines = []
 	for line in infile:
 		line_number += 1
+		line = check_valid_line(line)
+		if line == 'skip_line':
+			continue
 		seq, exp_level = separate_seq_and_el_data(line)
 		if seq.startswith(flank_A) and seq.endswith(flank_B):
 			pass
@@ -170,8 +174,8 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
 			scaffold_type + '_homogeneous_seqs.txt')
 	absolute_path = os.path.join(os.getcwd(), relative_path)
 	# Open the input and output files.
-	input_seqs = smart_open(input_seqs, 'rt')
-	output_seqs = smart_open(absolute_path, 'wt')
+	infile = smart_open(input_seqs, 'r')
+	output_seqs = smart_open(absolute_path, 'w')
 	# Retrieve modal length for sequences in input file.
 	if scaffold_type == 'pTpA':
 		modal_length = 110
@@ -180,16 +184,19 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
 	else:
 		_, _, modal_length = get_max_min_mode_length_of_seqs(input_seqs)
 	# Find seqs in input file w/ modal length and write them to output file
-	for line in input_seqs:
-		if line is None or line == "" or line[0]=="#":
+	# count = 0 ###################
+	for line in infile:
+		# count += 1 #####################
+		line = check_valid_line(line)
+		if line == 'skip_line':
 			continue
 		seq, exp_level = separate_seq_and_el_data(line)
 		if len(seq) == modal_length:
-			output_seqs.write(line + '\r\n')
+			output_seqs.write(seq + '\t' + str(exp_level) + '\n')
 		else:
 			continue
 	# Close the input and output files.
-	input_seqs.close()
+	infile.close()
 	output_seqs.close()
 
 	return absolute_path
@@ -213,16 +220,10 @@ def separate_seq_and_el_data(line):
 	"""
 	# Assertions
 	assert isinstance(line, str), 'Input line must be passed as a string.'
-	assert line.count('\t') == 1, 'Input line must contain only 2 types of \
-	data, separated by 1 tab.'
 	# Functionality
 	data = line.rstrip().split('\t')
 	seq = data[0]
-	try:
-		exp_level = float(data[1])
-	except ValueError:
-		raise ValueError('Second data element must be a the string \
-		representation of an integer or float')
+	exp_level = float(data[1])
 
 	return seq, exp_level
 
@@ -241,12 +242,80 @@ def get_max_min_mode_length_of_seqs(input_seqs):
 		max_length (int) -- the length of the longest sequence in the
 		input file.
 	"""
+	# Assertions
+	assert isinstance(input_seqs, str), 'Path name for input file must be \
+	passed as a string.'
+	assert os.path.exists(input_seqs), 'Input file does not exist.'
+	# Functionality
+	infile = smart_open(input_seqs, 'r')
 	seq_lengths = []
-	for line in input_seqs:
+	for line in infile:
+		line = check_valid_line(line)
+		if line == 'skip_line':
+			continue
 		seq, exp_level = separate_seq_and_el_data(line)
 		seq_lengths.append(len(seq))
 	max_length = max(seq_lengths)
 	min_length = min(seq_lengths)
 	modal_length = max(set(seq_lengths), key=seq_lengths.count)
+	# Close the input file.
+	infile.close()
 
 	return max_length, min_length, modal_length
+
+def remove_files(files):
+	"""
+	Takes a list of path names for files and deletes each of the
+	files from the local system.
+
+	Args:
+	-----
+		files (list) -- the absolute paths, as strings, of the
+		files to be deleted.
+
+	Returns:
+	-----
+	 	None
+	"""
+	# Assertions
+	for file in files:
+		assert isinstance(file, str), 'File path names must be passed as \
+		strings.'
+		assert os.path.exists(file), 'File does not exist.'
+	# Functionality
+	for file in files:
+		os.remove(file)
+
+	return
+
+def check_valid_line(line):
+	"""
+	Takes an line from an input file containing sequence and
+	expression level data and returns instructions on what to
+	do based on its classification. For example, if the line is
+	a comment or is empty, the function will return 'skip_line'.
+	If the line is encoded into bytes, it will return the
+	decoded line. Not satisfying these conditionals will mean the
+	line is valid, and so will be returned as it was inputted.
+
+	Args:
+	-----
+		line (str or bytes) -- a line from an input file to be
+		checked for validity
+
+	Returns:
+	-----
+		line (str) - if the input line was valid, the decoded line
+		is returned. Otherwise, the string 'skip_line' will be
+		returned.
+	"""
+	if isinstance(line, bytes): # decodes line if encoded
+		line = line.decode()
+	if line is None or line == "" or line[0]=="#":
+		return 'skip_line'
+	try:
+		seq, exp_level = separate_seq_and_el_data(line)
+	except IndexError:
+		line = 'skip_line'
+
+	return line
