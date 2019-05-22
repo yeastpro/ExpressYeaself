@@ -4,6 +4,8 @@ of the project.
 """
 import datetime as dt
 import gzip
+import os
+import subprocess
 
 def smart_open(filename, mode='rt'):
 	"""
@@ -13,8 +15,8 @@ def smart_open(filename, mode='rt'):
 
 	Args:
 	-----
-		filename (str) -- the absolute pathname of the input
-		file to be opened.
+		filename (str) -- the absolute pathname of the file
+		to be opened.
 
 		mode (str) -- the way in which the file should be
 		opened by the gzip.open command. Options: 'r', 'rb',
@@ -31,14 +33,34 @@ def smart_open(filename, mode='rt'):
 	# Assertions
 	assert isinstance(filename, str), 'Input file pathname must be a string.'
 	assert isinstance(mode, str), 'Opening mode must be passed as a string.'
-	assert os.path.exists(filename), 'Input file does not exist.'
+	if mode.startswith('r'):
+		assert os.path.exists(filename), 'Input file does not exist.'
 	# Functionality
-	if len(filename) > 3 and filename[-3:].lower() == '.gz':
+	if len(filename) > 3 and filename.endswith('.gz'):
 		file = gzip.open(filename, mode)
 	else:
 		file = open(filename,mode);
 
 	return file
+
+def smart_close(file):
+	"""
+	Properly closes a file, compressing it if not already
+	compressed.
+
+	Args:
+	-----
+		file (file object) -- the file to be closed.
+
+	Returns:
+	-----
+		None
+
+	"""
+	if file.endswith('.gz'):
+		file.close()
+
+	return
 
 def get_time_stamp():
 	"""
@@ -59,3 +81,28 @@ def get_time_stamp():
 	time_stamp = time_stamp.replace('.', '').replace(':', '')
 
 	return time_stamp
+
+def get_line_count(infile):
+	"""
+	Counts and returns the number of lines in a file.
+
+	Args:
+	-----
+		infile (str) -- the absolute path for the input file.
+
+	Returns:
+	-----
+		line_count (int) -- the number of lines in the input file.
+	"""
+	# Assertions
+	assert os.path.exists(infile), 'Input file does not exist.'
+	assert isinstance(infile, str), 'Path name for input file must be passed \
+	as a string.'
+	# Functionality
+	file = smart_open(infile, 'r')
+	count = 0
+	for line in file:
+		count += 1
+	file.close()
+
+	return count
