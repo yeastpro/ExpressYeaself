@@ -6,6 +6,7 @@ AAAAATGCATGCTTTT.
 
 """
 import organize_data as organize
+import os
 import pandas as pd
 from utilities import smart_open as smart_open
 from utilities import get_time_stamp as get_time_stamp
@@ -71,12 +72,9 @@ def insert_seq_into_scaffold(seq, scaffold):
 	sequence must be a string.'
 	assert isinstance(scaffold, str), 'TypeError: Input scaffold sequence \
 	must be	a string.'
+	# Functionality
 	var_start = scaffold.find('N') # find index where variable region starts
 	var_end = scaffold.rfind('N')  # reverse find where variable region ends
-	variable_seq = scaffold[var_start : var_end + 1]
-	assert len(seq) == len(variable_seq), 'Oligonucleotide sequence to \
-	be inserted into the scaffold must be equal to length of variable region.'
-	# Functionality
 	complete_seq = scaffold[:var_start] + seq + scaffold[var_end+1:]
 
 	return complete_seq
@@ -108,8 +106,6 @@ def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
 	# Assertions
 	assert isinstance(input_seqs, str), 'TypeError: pathname for input file \
 	must be a string.'
-	assert isinstance(scaffold, str), 'TypeError: scaffold sequence must be \
-	passed as a string.'
 	assert isinstance(scaffold_type, str), 'Scaffold type must be passed as \
 	a string.'
 	assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Scaffold \
@@ -120,19 +116,22 @@ def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
 		'_' + scaffold_type + '_seqs_inserted_into_scaffold.txt')
 	absolute_path = os.path.join(os.getcwd(), relative_path)
 	# Open input and output files
-	input_seqs = smart_open(input_seqs, 'rt')
-	outfile = smart_open(absolute_path, 'wt')
+	infile = smart_open(input_seqs, 'r')
+	outfile = smart_open(absolute_path, 'w')
 	# Retrieve the scaffold sequence
 	scaff_directory = '../example/' + scaffold_type + '_data/'
-	scaff_rel_path = scaffold_directory + scaffold_type + '_scaffold.txt'
+	scaff_rel_path = scaff_directory + scaffold_type + '_scaffold.txt'
 	scaff_abs_path = os.path.join(os.getcwd(), scaff_rel_path)
-	scaff_file = smart_open(scaffold_path, 'rt')
-	scaffold = scaffold_file.readline().replace('\n', '')
+	scaff_file = smart_open(scaff_abs_path, 'r')
+	scaffold = scaff_file.readline().replace('\n', '')
 	# Insert sequences into scaffold and write data to output file
-	for line in input_seqs:
+	for line in infile:
+		line = organize.check_valid_line(line)
+		if line == 'skip_line':
+			continue
 		seq, exp_level = organize.separate_seq_and_el_data(line)
 		complete_seq = insert_seq_into_scaffold(seq, scaffold)
-		outfile.write(complete_seq + '\t' + str(exp_level) + '\r\n')
+		outfile.write(complete_seq + '\t' + str(exp_level) + '\n')
 	# Close the input, output, and scaffold files.
 	infile.close()
 	outfile.close()
@@ -143,15 +142,13 @@ def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
 def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
 	"""
 	Removes the flanking sequences from the oligonucleotide sequences
-	and returns the variable 80-mer sequence.
+	and returns the variable region.
 	The input sequences measured in the pTpA scaffold will be of
 	the form:
-		TGCATTTTTTTCACATC-(variable 80-mer seq)-GTTACGGCTGTT
+		TGCATTTTTTTCACATC-(variable region)-GTTACGGCTGTT
 	Whereas the input sequences measured in the Abf1TATA scaffold
 	will be of the form:
-		TCACGCAGTATAGTTC-(variable 80-mer sequence)-GGTTTATTGTTTATAAAAA
-	where the constant flank regions exist purely for in-lab sequencing
-	purposes and aren't needed for insertion into a scaffold sequence.
+		TCACGCAGTATAGTTC-(variable region)-GGTTTATTGTTTATAAAAA
 
 	Args:
 	-----
@@ -164,13 +161,12 @@ def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
 
 	Returns:
 	-----
-		oligo_seq (str) -- the variable 80-mer sequence of the input
+		oligo_seq (str) -- the variable region of the input
 		oligonucleotide resulting from removing the constant flanking
 		sequences.
 	"""
 	# Assertions
 	assert isinstance(oligo_seq, str), 'Input sequence must be a string'
-	assert len(oligo_seq) == 110, 'Input sequence must be of length 110'
 	assert isinstance(scaffold_type, str), 'Scaffold type must be passed \
 	as a string.'
 	assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Input \
@@ -193,7 +189,7 @@ def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
 
 	return oligo_seq
 
-def remove_flanks_from_all_seqs(input_sequences, scaffold_type='pTpA'):
+def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
 	"""
 	Removes all of the flanking sequences from an input file of
 	sequences and their expression levels (tab separated).
@@ -203,7 +199,7 @@ def remove_flanks_from_all_seqs(input_sequences, scaffold_type='pTpA'):
 
 	Args:
 	-----
-		input_sequences (str) -- the absolute pathname of the file
+		input_seqs (str) -- the absolute pathname of the file
 		containing all of the input sequences and their expression
 		levels (tab separated).
 
@@ -218,18 +214,16 @@ def remove_flanks_from_all_seqs(input_sequences, scaffold_type='pTpA'):
 		along with their expression levels (tab separated).
 	"""
 	# Assertions
-	assert isinstance(input_sequences, str), 'Input file pathname must be \
+	assert isinstance(input_seqs, str), 'Input file pathname must be \
 	passed as a string.'
-	assert os.path.exists(input_sequences), 'Input file does not exist.'
+	assert os.path.exists(input_seqs), 'Input file does not exist.'
 	assert isinstance(scaffold_type, str), 'Scaffold type must be passed \
 	as a string.'
 	assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Input \
 	scaffold type must be either pTpA or Abf1TATA.'
-	assert isinstance(outfile, str), 'Output file pathname must be \
-	passed as a string.'
 	# Check that all of the flank sequences are the same in all
 	# sequences in the input file.
-	incorrect = organize.check_oligonucleotide_flanks(infile,scaffold_type)
+	incorrect = organize.check_oligonucleotide_flanks(input_seqs, scaffold_type)
 	assert len(incorrect) == 0, 'Not all sequences in input file have same \
 	flanking sequences.'
 	# Functionality
@@ -239,13 +233,17 @@ def remove_flanks_from_all_seqs(input_sequences, scaffold_type='pTpA'):
 		'_' + scaffold_type + '_seqs_flanks_removed.txt')
 	absolute_path = os.path.join(os.getcwd(), relative_path)
 	# Opening the input and output files.
-	infile = smart_open(input_sequences, 'rt')
-	outfile = smart_open(absolute_path, 'wt')
+	infile = smart_open(input_seqs, 'r')
+	outfile = smart_open(absolute_path, 'w')
 	# Remove flanks and write data to output file.
-	for line in input_sequences:
+	for line in infile:
+		line = organize.check_valid_line(line)
+		if line == 'skip_line':
+			continue
 		seq, exp_level = organize.separate_seq_and_el_data(line)
-		deflanked_seq = remove_flanks_from_seq(seq,scaffold_type=scaffold_type)
-		outfile.write(deflanked_seq + '\t' + exp_level + '\r\n')
+		deflanked_seq = remove_flanks_from_seq(seq, scaffold_type=scaffold_type)
+		outfile.write(deflanked_seq + '\t' + str(exp_level) + '\n')
+	# Close the input and output files.
 	infile.close()
 	outfile.close()
 
