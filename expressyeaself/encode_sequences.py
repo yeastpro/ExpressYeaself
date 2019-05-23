@@ -136,31 +136,39 @@ def one_hot_encode_sequence(promoter_seq):
 	# Assertions
 	assert isinstance(promoter_seq, str), 'TypeError: Input nucleotide \
 	sequence must be a string.'
-	non_ATGC_indices = []
+	mapping =  {'A' : [1,0,0,0,0],
+			  	'T' : [0,1,0,0,0],
+				'G' : [0,0,1,0,0],
+				'C' : [0,0,0,1,0],
+				'N' : [0,0,0,0,1],
+				'P' : [0,0,0,0,0]}
+	invalid_indices = []
 	index = -1 # Iterator for character index in promoter_seq string
-	valid_nucs = ['A', 'T', 'G', 'C', 'N']
 	for nuc in promoter_seq:
 		index += 1
-		if nuc not in valid_nucs:
-			non_ATGC_indices.append(index) # Appends list of incorrect indices
-	if len(non_ATGC_indices) is not 0:
-		raise Exception('Input nucleotide sequence contains a non ATGC base at \
-		string indices %s' %(non_ATGC_indices))
+		nuc = nuc.upper()
+		if nuc not in mapping.keys():
+			invalid_indices.append(index) # Appends list of incorrect indices
+	if len(invalid_indices) is not 0:
+		raise Exception('Input nucleotide sequence contains a non ATGC or \
+		"N" or "P" at string indices %s' %(invalid_indices))
 	# Functionality
 	one_hot_seq = []
 	for nuc in promoter_seq:
-		index = -1 # Iterator for index in BASES list
-		nuc_vector = []
-		if nuc == 'N':
-			nuc_vector = [0,0,0,0] # add a null vector
-		else:
-			for base in BASES:
-				index += 1
-				if nuc == base:
-					nuc_vector.append(1)
-				else:
-					nuc_vector.append(0)
-		one_hot_seq.append(nuc_vector)
+		# index = -1 # Iterator for index in BASES list
+		# nuc_vector = []
+		# if nuc == 'N':
+		# 	nuc_vector = [0,0,0,0] # add a null vector
+		# else:
+		# 	for base in BASES:
+		# 		index += 1
+		# 		if nuc == base:
+		# 			nuc_vector.append(1)
+		# 		else:
+		# 			nuc_vector.append(0)
+		# one_hot_seq.append(nuc_vector)
+		nuc = nuc.upper()
+		one_hot_seq.append(mapping(nuc))
 
 	return one_hot_seq
 

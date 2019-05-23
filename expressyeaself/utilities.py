@@ -7,7 +7,7 @@ import gzip
 import os
 import subprocess
 
-def smart_open(filename, mode='rt'):
+def smart_open(filename, mode='r'):
 	"""
 	A function to open a file. If the file is compressed
 	(with a '.gz' extension) it is decompressed before being
