@@ -281,10 +281,12 @@ def remove_files(files):
 	for file in files:
 		assert isinstance(file, str), 'File path names must be passed as \
 		strings.'
-		assert os.path.exists(file), 'File does not exist.'
 	# Functionality
 	for file in files:
-		os.remove(file)
+		if os.path.exists(file):
+			os.remove(file)
+		else:
+			pass
 
 	return
 

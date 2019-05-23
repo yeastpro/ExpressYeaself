@@ -248,3 +248,69 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
 	outfile.close()
 
 	return absolute_path
+
+def pad_sequences(input_seqs, pad_front=False, extra_padding=0):
+	"""
+	Pads sequences in an input file to the length of the longest
+	sequence in the file, plus any extra padding if specified.
+	Pads the sequences at either the front or the back, with 'N'
+	characters.
+
+	Args:
+	-----
+	 	input_seqs (str) -- the absolute path of the input file
+		containing the sequences to be padded and their associated
+		expression levels, tab separated.
+
+		pad_front (bool) -- If True, will add padding to the front
+		of the sequences. If False (default) pads sequences at the
+		end (i.e. the RHS of the sequences).
+
+		extra_padding (int) -- The number of extra null bases to
+		add onto the front/back of the sequence
+
+	Returns:
+	-----
+		absolute_path (str) -- the absolute path of the output file
+		containing all of the padded sequences and their associated
+		expression levels, tab separated.
+	"""
+	# Assertions
+	assert isinstance(input_seqs, str), 'Pathname of input file must be \
+	passed as a string.'
+	assert os.path.exists(input_seqs), 'File does not exist.'
+	assert isinstance(pad_front, bool), 'The pad_front variable must be \
+	passed as a bool.'
+	assert isinstance(extra_padding, int), 'The amount of extra padding must \
+	be passed as an integer.'
+	assert extra_padding >= 0, 'The amount of extra padding must be passed as \
+	a non-negative integer.'
+	# Functionality
+	# Define and open the output file
+	absolute_path = input_seqs.replace('.txt', '_padded.txt')
+	outfile = smart_open(absolute_path, 'w')
+	# Retrieve input sequences, pad them, and write them to output file
+	max_length, _, _ = organize.get_max_min_mode_length_of_seqs(input_seqs)
+	pad_length = max_length + extra_padding
+	with smart_open(input_seqs) as f:
+		for line in f:
+			line = organize.check_valid_line(line)
+			if line == 'skip_line':
+				continue
+			seq, exp_level = organize.separate_seq_and_el_data(line)
+			difference = pad_length - len(seq)
+			if difference == 0:
+				padded_seq = seq
+			elif difference > 0:
+				padding_seq = 'P' * difference
+				if pad_front:
+					padded_seq = padding_seq + seq
+				else: # pad the end of the sequence
+					padded_seq = seq + padding_seq
+			else:
+				raise Exception('Sequence length longer than padding length.')
+			outfile.write(padded_seq + '\t' + str(exp_level) + '\n')
+	# Close the output file
+	outfile.close()
+
+	return absolute_path
