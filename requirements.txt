@@ -1,6 +1,6 @@
-bowtie2
 jupyter
 numpy
 pandas
+pytest
 tensorflow
 xlrd
