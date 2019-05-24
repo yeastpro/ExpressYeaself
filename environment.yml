@@ -1,6 +1,6 @@
 name: yeast
 channels:
-  - bioconda
+  - anaconda
   - defaults
 dependencies:
     #  - appnope=0.1.0
@@ -8,7 +8,6 @@ dependencies:
   - backcall=0.1.0
   - blas=1.0
   - bleach=3.1.0
-    #  - bowtie2=2.3.5
     #  - ca-certificates=2019.1.2
   - certifi=2019.3.9
   - cycler=0.10.0
@@ -49,13 +48,14 @@ dependencies:
   - mkl=2019.3
   - mkl_fft=1.0.10
   - mkl_random=1.0.2
+  - more-itertools=7.0.0
   - nbconvert=5.4.1
   - nbformat=4.4.0
     #  - ncurses=6.1
   - notebook=5.7.8
   - numpy=1.16.2
   - numpy-base=1.16.2
-  - openssl=1.1.1b
+  - openssl=1.1.1
   - pandas=0.24.2
   - pandoc=2.2.3.
   - pandocfilters=1.4.2
@@ -65,13 +65,16 @@ dependencies:
   - pexpect=4.7.0
   - pickleshare=0.7.5
   - pip=19.0.3
+  - pluggy=0.11.0
   - prometheus_client=0.6.0
   - prompt_toolkit=2.0.9
     #  - ptyprocess=0.6.0
+  - py=1.8.0
   - pygments=2.3.1
   - pyparsing=2.3.1
   - pyqt=5.9.2
   - pyrsistent=0.14.11
+  - pytest=4.5.0
   - python=3.7.3
   - python-dateutil=2.8.0
   - pytz=2018.9
