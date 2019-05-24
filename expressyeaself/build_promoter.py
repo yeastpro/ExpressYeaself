@@ -12,133 +12,6 @@ from utilities import smart_open as smart_open
 from utilities import get_time_stamp as get_time_stamp
 import xlrd
 
-def extract_scaffold_seqs(infile, outfile):
-	"""
-	A function that generates a plain text file containing scaffold
-	IDs and sequences (tab separated) as extracted from the original
-	Excel file that contains them.
-
-	Args:
-	-----
-	 	infile (str)  -- the absolute path for the input Excel file
-		containing the scaffold data.
-
-		outfile (str) -- the absolute path for the output file
-		containing scaffold IDs and sequences.
-
-	Returns:
-	-----
-		None
-	"""
-	# Assertions
-	assert isinstance(infile, str), 'Pathname for input file must be a \
-	string.'
-	assert isinstance(outfile, str), 'Pathname for output file must be a \
-	string.'
-	assert infile != outfile, 'Output file must have a different pathname as \
-	the Input file; otherwise Input data will be overwritten!'
-	# Functionality
-	scaff_df = pd.read_csv(infile)
-	scaff_out = smart_open(outfile, 'w+')
-	scaff_out.close()
-
-	return
-
-def insert_seq_into_scaffold(seq, scaffold):
-	"""
-	Inserts an oligonucleotide sequence into a scaffold sequence
-	(i.e. ATGC...NNNN...ATCG) in place of its variable region
-	(NNN...). The input  sequence and variable region of the
-	scaffold must be the same length.
-
-	Args:
-	-----
-		seq (str) -- the oligonucleotide sequence to be
-		inserted into the scaffold sequence in place of the
-		variable region. Must be the same length as the variable
-		region in the scaffold.
-
-		scaffold (str) -- the scaffold sequence containing a
-		variable region of repeating 'N' characters.
-
-	Returns:
-	-----
-		complete_seq (str) -- the complete nucleotide sequence,
-		where the variable region of the scaffold has been
-		replaced with the input oligonucleotide.
-	"""
-	# Assertions
-	assert isinstance(seq, str), 'TypeError: Input oligonucleotide \
-	sequence must be a string.'
-	assert isinstance(scaffold, str), 'TypeError: Input scaffold sequence \
-	must be	a string.'
-	# Functionality
-	var_start = scaffold.find('N') # find index where variable region starts
-	var_end = scaffold.rfind('N')  # reverse find where variable region ends
-	complete_seq = scaffold[:var_start] + seq + scaffold[var_end+1:]
-
-	return complete_seq
-
-def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
-	"""
-	Takes an input file containing N sequences and inserts them into
-	a single scaffold sequence, outputting the N unique promoter
-	sequences to an output file along with their expression levels
-	(tab separated).
-
-	Args:
-	-----
-		input_seqs (str) -- the absolute path for the input file
-		containing all the oligonucleotide sequences to be inserted
-		into the single scaffold sequence. All sequences must be of
-		the same length as the scaffold variable region.
-
-		scaffold_type (str) -- the scaffold type (pTpA or Abf1TATA)
-		that the input sequences had their expression levels
-		measured in. Default: 'pTpA'.
-
-	Returns:
-	-----
-		absolute_path (str) -- the absolute path for the output file
-		containing all of the complete promoter sequences (where each
-		input sequence has been inserted into the scaffold sequence).
-	"""
-	# Assertions
-	assert isinstance(input_seqs, str), 'TypeError: pathname for input file \
-	must be a string.'
-	assert isinstance(scaffold_type, str), 'Scaffold type must be passed as \
-	a string.'
-	assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Scaffold \
-	type must either be passed as "pTpA" or "Abf1TATA".'
-	# Functionality
-	time_stamp = get_time_stamp() # get time stamp for unique file naming
-	relative_path = ('../example/' + scaffold_type + '_data/' + time_stamp +
-		'_' + scaffold_type + '_seqs_inserted_into_scaffold.txt')
-	absolute_path = os.path.join(os.getcwd(), relative_path)
-	# Open input and output files
-	infile = smart_open(input_seqs, 'r')
-	outfile = smart_open(absolute_path, 'w')
-	# Retrieve the scaffold sequence
-	scaff_directory = '../example/' + scaffold_type + '_data/'
-	scaff_rel_path = scaff_directory + scaffold_type + '_scaffold.txt'
-	scaff_abs_path = os.path.join(os.getcwd(), scaff_rel_path)
-	scaff_file = smart_open(scaff_abs_path, 'r')
-	scaffold = scaff_file.readline().replace('\n', '')
-	# Insert sequences into scaffold and write data to output file
-	for line in infile:
-		line = organize.check_valid_line(line)
-		if line == 'skip_line':
-			continue
-		seq, exp_level = organize.separate_seq_and_el_data(line)
-		complete_seq = insert_seq_into_scaffold(seq, scaffold)
-		outfile.write(complete_seq + '\t' + str(exp_level) + '\n')
-	# Close the input, output, and scaffold files.
-	infile.close()
-	outfile.close()
-	scaff_file.close()
-
-	return absolute_path
-
 def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
 	"""
 	Removes the flanking sequences from the oligonucleotide sequences
@@ -249,6 +122,101 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
 
 	return absolute_path
 
+def insert_seq_into_scaffold(seq, scaffold):
+	"""
+	Inserts an oligonucleotide sequence into a scaffold sequence
+	(i.e. ATGC...NNNN...ATCG) in place of its variable region
+	(NNN...). The input  sequence and variable region of the
+	scaffold must be the same length.
+
+	Args:
+	-----
+		seq (str) -- the oligonucleotide sequence to be
+		inserted into the scaffold sequence in place of the
+		variable region. Must be the same length as the variable
+		region in the scaffold.
+
+		scaffold (str) -- the scaffold sequence containing a
+		variable region of repeating 'N' characters.
+
+	Returns:
+	-----
+		complete_seq (str) -- the complete nucleotide sequence,
+		where the variable region of the scaffold has been
+		replaced with the input oligonucleotide.
+	"""
+	# Assertions
+	assert isinstance(seq, str), 'TypeError: Input oligonucleotide \
+	sequence must be a string.'
+	assert isinstance(scaffold, str), 'TypeError: Input scaffold sequence \
+	must be	a string.'
+	# Functionality
+	var_start = scaffold.find('N') # find index where variable region starts
+	var_end = scaffold.rfind('N')  # reverse find where variable region ends
+	complete_seq = scaffold[:var_start] + seq + scaffold[var_end+1:]
+
+	return complete_seq
+
+def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
+	"""
+	Takes an input file containing N sequences and inserts them into
+	a single scaffold sequence, outputting the N unique promoter
+	sequences to an output file along with their expression levels
+	(tab separated).
+
+	Args:
+	-----
+		input_seqs (str) -- the absolute path for the input file
+		containing all the oligonucleotide sequences to be inserted
+		into the single scaffold sequence. All sequences must be of
+		the same length as the scaffold variable region.
+
+		scaffold_type (str) -- the scaffold type (pTpA or Abf1TATA)
+		that the input sequences had their expression levels
+		measured in. Default: 'pTpA'.
+
+	Returns:
+	-----
+		absolute_path (str) -- the absolute path for the output file
+		containing all of the complete promoter sequences (where each
+		input sequence has been inserted into the scaffold sequence).
+	"""
+	# Assertions
+	assert isinstance(input_seqs, str), 'TypeError: pathname for input file \
+	must be a string.'
+	assert isinstance(scaffold_type, str), 'Scaffold type must be passed as \
+	a string.'
+	assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Scaffold \
+	type must either be passed as "pTpA" or "Abf1TATA".'
+	# Functionality
+	time_stamp = get_time_stamp() # get time stamp for unique file naming
+	relative_path = ('../example/' + scaffold_type + '_data/' + time_stamp +
+		'_' + scaffold_type + '_seqs_inserted_into_scaffold.txt')
+	absolute_path = os.path.join(os.getcwd(), relative_path)
+	# Open input and output files
+	infile = smart_open(input_seqs, 'r')
+	outfile = smart_open(absolute_path, 'w')
+	# Retrieve the scaffold sequence
+	scaff_directory = '../example/' + scaffold_type + '_data/'
+	scaff_rel_path = scaff_directory + scaffold_type + '_scaffold.txt'
+	scaff_abs_path = os.path.join(os.getcwd(), scaff_rel_path)
+	scaff_file = smart_open(scaff_abs_path, 'r')
+	scaffold = scaff_file.readline().replace('\n', '')
+	# Insert sequences into scaffold and write data to output file
+	for line in infile:
+		line = organize.check_valid_line(line)
+		if line == 'skip_line':
+			continue
+		seq, exp_level = organize.separate_seq_and_el_data(line)
+		complete_seq = insert_seq_into_scaffold(seq, scaffold)
+		outfile.write(complete_seq + '\t' + str(exp_level) + '\n')
+	# Close the input, output, and scaffold files.
+	infile.close()
+	outfile.close()
+	scaff_file.close()
+
+	return absolute_path
+
 def pad_sequences(input_seqs, pad_front=False, extra_padding=0):
 	"""
 	Pads sequences in an input file to the length of the longest
@@ -314,3 +282,35 @@ def pad_sequences(input_seqs, pad_front=False, extra_padding=0):
 	outfile.close()
 
 	return absolute_path
+
+# def extract_scaffold_seqs(infile, outfile):
+# 	"""
+# 	A function that generates a plain text file containing scaffold
+# 	IDs and sequences (tab separated) as extracted from the original
+# 	Excel file that contains them.
+#
+# 	Args:
+# 	-----
+# 	 	infile (str)  -- the absolute path for the input Excel file
+# 		containing the scaffold data.
+#
+# 		outfile (str) -- the absolute path for the output file
+# 		containing scaffold IDs and sequences.
+#
+# 	Returns:
+# 	-----
+# 		None
+# 	"""
+# 	# Assertions
+# 	assert isinstance(infile, str), 'Pathname for input file must be a \
+# 	string.'
+# 	assert isinstance(outfile, str), 'Pathname for output file must be a \
+# 	string.'
+# 	assert infile != outfile, 'Output file must have a different pathname as \
+# 	the Input file; otherwise Input data will be overwritten!'
+# 	# Functionality
+# 	scaff_df = pd.read_csv(infile)
+# 	scaff_out = smart_open(outfile, 'w+')
+# 	scaff_out.close()
+#
+# 	return

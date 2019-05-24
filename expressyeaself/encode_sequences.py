@@ -2,7 +2,6 @@
 This script contains the functions to encode promoter nucleotide
 sequences by different methods, depending on the requirement of the
 neural network that will receive the encoded sequence.
-Methods by which sequences can be encoded: One-Hot.
 """
 import numpy as np
 import organize_data as organize

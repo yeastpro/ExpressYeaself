@@ -43,25 +43,6 @@ def smart_open(filename, mode='r'):
 
 	return file
 
-def smart_close(file):
-	"""
-	Properly closes a file, compressing it if not already
-	compressed.
-
-	Args:
-	-----
-		file (file object) -- the file to be closed.
-
-	Returns:
-	-----
-		None
-
-	"""
-	if file.endswith('.gz'):
-		file.close()
-
-	return
-
 def get_time_stamp():
 	"""
 	Creates a unique time stamp number containing no other character
