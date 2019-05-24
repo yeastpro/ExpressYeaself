@@ -8,27 +8,27 @@ import os
 test = context.utilities()
 
 def test_smart_open():
-	"""
-	Tests the function that decompresses (if compressed) and opens
-	a file.
-	"""
-	file = test.smart_open('./trial_file.txt', 'w')
-	assert os.path.exists(file), 'File does not exist.'
-	os.remove(file)
+    """
+    Tests the function that decompresses (if compressed) and opens
+    a file.
+    """
+    file = test.smart_open('./trial_file.txt', 'w')
+    assert os.path.exists(file), 'File does not exist.'
+    os.remove(file)
 
-	return
+    return
 
 def test_get_time_stamp():
-	"""
-	Tests the function that produces a unique time stamp.
-	"""
+    """
+    Tests the function that produces a unique time stamp.
+    """
 
-	return
+    return
 
 def test_get_line_count():
-	"""
-	Tests the function that returns the line count of an input
-	file.
-	"""
+    """
+    Tests the function that returns the line count of an input
+    file.
+    """
 
-	return
+    return
