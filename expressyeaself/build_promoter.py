@@ -5,11 +5,11 @@ For example: ATGCATGC inserted into AAAANNNNNNNNTTTT would give
 AAAAATGCATGCTTTT.
 
 """
-import organize_data as organize
+import expressyeaself.organize_data as organize
 import os
 import pandas as pd
-from utilities import smart_open as smart_open
-from utilities import get_time_stamp as get_time_stamp
+from expressyeaself.utilities import smart_open as smart_open
+from expressyeaself.utilities import get_time_stamp as get_time_stamp
 import xlrd
 
 def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
@@ -56,7 +56,6 @@ def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
     input sequence doesn't start with appropriate flank seq" %(scaffold_type)
     assert oligo_seq.endswith(flank_B), "Scaffold type specified as %s but \
     input sequence doesn't end with appropriate flank seq" %(scaffold_type)
-
     oligo_seq = oligo_seq.replace(flank_A, '')
     oligo_seq = oligo_seq.replace(flank_B, '')
 
@@ -146,10 +145,10 @@ def insert_seq_into_scaffold(seq, scaffold):
         replaced with the input oligonucleotide.
     """
     # Assertions
-    assert isinstance(seq, str), 'TypeError: Input oligonucleotide \
-    sequence must be a string.'
+    assert isinstance(seq, str), 'TypeError: Input oligonucleotide sequence \
+    must be a string.'
     assert isinstance(scaffold, str), 'TypeError: Input scaffold sequence \
-    must be    a string.'
+    must be a string.'
     # Functionality
     var_start = scaffold.find('N') # find index where variable region starts
     var_end = scaffold.rfind('N')  # reverse find where variable region ends

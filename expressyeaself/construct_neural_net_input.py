@@ -4,16 +4,14 @@ encoded sequences in the correct format for passing into a
 neural network architecture.
 """
 
-import build_promoter as build
-import encode_sequences as encode
-from encode_sequences import BASES as BASES
-from encode_sequences import METHODS as METHODS
-import organize_data as organize
+import expressyeaself.build_promoter as build
+import expressyeaself.encode_sequences as encode
+import expressyeaself.organize_data as organize
 import os
 import time as t
-from utilities import get_time_stamp as get_time_stamp
-from utilities import get_line_count as get_line_count
-from utilities import smart_open as smart_open
+from expressyeaself.utilities import get_time_stamp as get_time_stamp
+from expressyeaself.utilities import get_line_count as get_line_count
+from expressyeaself.utilities import smart_open as smart_open
 
 def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
                         deflank=True, insert_into_scaffold=True,

@@ -5,16 +5,23 @@ the utilities.py script.
 import expressyeaself.tests.context as context
 import os
 
-test = context.utilities()
+test = context.utilities
 
 def test_smart_open():
     """
     Tests the function that decompresses (if compressed) and opens
     a file.
     """
-    file = test.smart_open('./trial_file.txt', 'w')
-    assert os.path.exists(file), 'File does not exist.'
-    os.remove(file)
+    filename = './trial_file.txt'
+    file = test.smart_open(filename, 'w')
+    file.close()
+    assert os.path.exists(filename), 'File does not exist.'
+    with test.smart_open(filename, 'w') as f:
+        text = 'This is a test'
+        f.write(text)
+    with test.smart_open(filename, 'r') as f:
+        assert f.readline() == text
+    os.remove(filename)
 
     return
 

@@ -4,10 +4,10 @@ sequences by different methods, depending on the requirement of the
 neural network that will receive the encoded sequence.
 """
 import numpy as np
-import organize_data as organize
+import expressyeaself.organize_data as organize
 import os
-from utilities import smart_open as smart_open
-from utilities import get_time_stamp as get_time_stamp
+from expressyeaself.utilities import smart_open as smart_open
+from expressyeaself.utilities import get_time_stamp as get_time_stamp
 
 BASES = ['A','T','G','C']
 METHODS = ['One-Hot']
@@ -167,7 +167,7 @@ def one_hot_encode_sequence(promoter_seq):
         #             nuc_vector.append(0)
         # one_hot_seq.append(nuc_vector)
         nuc = nuc.upper()
-        one_hot_seq.append(mapping(nuc))
+        one_hot_seq.append(mapping[nuc])
 
     return one_hot_seq
 

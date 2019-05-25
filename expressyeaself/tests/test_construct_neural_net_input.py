@@ -5,7 +5,7 @@ construct_neural_net_input.py script.
 
 import expressyeaself.tests.context as context
 
-test = context.construct_neural_net_input()
+test = context.construct_neural_net_input
 
 def test_process_raw_data():
     """
