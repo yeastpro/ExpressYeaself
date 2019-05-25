@@ -4,7 +4,7 @@ the organize_data.py script.
 """
 import expressyeaself.tests.context as context
 
-test = context.organize_data()
+test = context.organize_data
 
 def test_separate_seq_and_e_data():
     """
@@ -12,6 +12,11 @@ def test_separate_seq_and_e_data():
     sepaarates and returns the nucleotide sequence as a string
     and its associated expression level as a float.
     """
+    trial_line = 'ATCGCTAGCT\t5'
+    seq, el = test.separate_seq_and_el_data(trial_line)
+    assert isinstance(seq, str)
+    assert isinstance(el, float)
+    assert el == 5.0
 
     return
 

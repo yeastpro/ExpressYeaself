@@ -5,7 +5,6 @@ of the project.
 import datetime as dt
 import gzip
 import os
-import subprocess
 
 def smart_open(filename, mode='r'):
     """
@@ -35,12 +34,12 @@ def smart_open(filename, mode='r'):
     assert isinstance(filename, str), 'Input file pathname must be a string.'
     assert isinstance(mode, str), 'Opening mode must be passed as a string.'
     if mode.startswith('r'):
-    assert os.path.exists(filename), 'Input file does not exist.'
+        assert os.path.exists(filename), 'Input file does not exist.'
     # Functionality
     if len(filename) > 3 and filename.endswith('.gz'):
-    file = gzip.open(filename, mode)
+        file = gzip.open(filename, mode)
     else:
-    file = open(filename,mode);
+        file = open(filename,mode);
 
     return file
 
@@ -84,7 +83,7 @@ def get_line_count(infile):
     file = smart_open(infile, 'r')
     count = 0
     for line in file:
-    count += 1
+        count += 1
     file.close()
 
     return count

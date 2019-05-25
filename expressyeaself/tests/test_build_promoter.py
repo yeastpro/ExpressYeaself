@@ -3,9 +3,9 @@ A script containing unit tests for the functions in the
 build_promoter.py script.
 """
 import codecs
-import expressyeaself.test.context as context
+import expressyeaself.tests.context as context
 
-test = context.build_promoter()
+test = context.build_promoter
 
 def test_remove_flanks_from_seq():
     """
@@ -28,17 +28,14 @@ def test_insert_seq_into_scaffold():
     Tests the function that inserts an 80 bp oligonucleotide sequence into
     a scaffold sequence to generate a complete promoter sequence.
     """
-    scaff = 'CCTCGACNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\
-                NNNNNNNNNNNNNNNNNNNNNNNNNNNNCCTATG'
-    oligo = 'TGCATTTTTTTCACATCTATTGGCTACTAATCAAAGGGACTCGGTGGATTTAATTCTGT\
-                TGATTCCGAAGCCTCTTATGTGCTCAAGTTTGGGTAGAGGTTACGGCTGTT'
-    try:
-        complete = insert_seq_into_scaffold(scaff, oligo)
-    except Excpetion as e:
-        assert isinstance(e, TypeError)
+    scaff = 'NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN'
+    oligo = ('TGCATTTTTTTCACATCTATTGGCTACTAATCAAAGGGACTCGGTGGATTTAATTCTGT\
+                TGATTCCGAAGCCTCTTATGTGCTCAAGTTTGGGTAGAGGTTACGGCTGTT')
+    complete = test.insert_seq_into_scaffold(oligo, scaff)
+    print(complete)
     assert isinstance(complete, str), 'TypeError: Function not outputting a \
     string.'
-    assert len(complete) == len(scaff), 'Function output sequence not the \
+    assert len(complete) == len(oligo), 'Function output sequence not the \
     same length as the input scaffold sequence.'
 
     return
@@ -71,7 +68,7 @@ def test_pad_sequences():
 #     infile = '../../example/scaffolds.xlsx'
 #     outfile = '../../example/extracted_scaffolds.txt'
 #     try:
-#         extract_scaffold_seqs(infile, outfile)
+#         test.extract_scaffold_seqs(infile, outfile)
 #     except Exception as e:
 #         assert isinstance(e, TypeError)
 #
