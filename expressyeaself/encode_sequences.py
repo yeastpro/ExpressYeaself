@@ -12,9 +12,7 @@ from expressyeaself.utilities import get_time_stamp as get_time_stamp
 BASES = ['A','T','G','C']
 METHODS = ['One-Hot']
 
-def encode_sequences_with_method(input_seqs, method='One-Hot',
-                                pad_sequences=True, extra_padding=0,
-                                pad_front=False):
+def encode_sequences_with_method(input_seqs, method='One-Hot'):
     """
     A wrapper function that encodes all of the sequences in an
     input file according to the specified method, pads them to
@@ -30,18 +28,18 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         method (str) -- the method by which the sequence should be
         encoded. Must choose from: 'One-Hot'. Default: 'One-Hot'
 
-        pad_sequences (bool) -- If True will pad the sequences with
-        null vectors to be the length of the longest sequence in the
-        input file. If False will not change their length.
-        Default: True.
-
-        extra_padding (int) -- the number of vectors greater than the
-        maximum sequence length to pad each encoded sequence to.
-        Default: 0.
-
-        pad_front (bool) -- whether to pad the front or end of the
-        encoded sequences, if pad_sequences is specified to be True.
-        Default: False (will therefore pad the ends).
+        # pad_sequences (bool) -- If True will pad the sequences with
+        # null vectors to be the length of the longest sequence in the
+        # input file. If False will not change their length.
+        # Default: True.
+        #
+        # extra_padding (int) -- the number of vectors greater than the
+        # maximum sequence length to pad each encoded sequence to.
+        # Default: 0.
+        #
+        # pad_front (bool) -- whether to pad the front or end of the
+        # encoded sequences, if pad_sequences is specified to be True.
+        # Default: False (will therefore pad the ends).
 
     Returns:
     -----
@@ -61,17 +59,17 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     time_stamp = get_time_stamp() # get time stamp for unique file naming
     relative_path = ('example/encoded_data/' + time_stamp +
         '_encoded_sequences')
-    if pad_sequences:
-        if pad_front:
-            relative_path += '_front_padded'
-        else:
-            relative_path += '_end_padded'
-    else:
-        relative_path += '_unpadded'
-    if extra_padding != 0:
-        relative_path += '_extra_%s' %(extra_padding)
-    else:
-        pass
+    # if pad_sequences:
+    #     if pad_front:
+    #         relative_path += '_front_padded'
+    #     else:
+    #         relative_path += '_end_padded'
+    # else:
+    #     relative_path += '_unpadded'
+    # if extra_padding != 0:
+    #     relative_path += '_extra_%s' %(extra_padding)
+    # else:
+    #     pass
     relative_path += '.txt'
     absolute_path = os.path.join(os.getcwd(), relative_path)
     # Open input and output files
@@ -80,7 +78,7 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     # Encode and pad each sequence and write it to file with expression level
     max_length, _, _ = organize.get_max_min_mode_length_of_seqs(input_seqs)
     line_number = 1
-    out_dict = {}
+    # out_dict = {}
     for line in infile:
         line_number += 1
         line = organize.check_valid_line(line)
@@ -99,15 +97,15 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
             # encoded_seq = another_encoding_method(seq)
             pass
         # Pad
-        if pad_sequences:
-            resize_len = max_length + extra_padding
-        else:
-            resize_len = len(encoded_seq) + extra_padding
-        if len(encoded_seq) == resize_len: # Doesn't need resizing
-            pass
-        else:
-            encoded_seq = resize_array(encoded_seq, resize_to=resize_len,
-                                        edit_front=pad_front)
+        # if pad_sequences:
+        #     resize_len = max_length + extra_padding
+        # else:
+        #     resize_len = len(encoded_seq) + extra_padding
+        # if len(encoded_seq) == resize_len: # Doesn't need resizing
+        #     pass
+        # else:
+        #     encoded_seq = resize_array(encoded_seq, resize_to=resize_len,
+        #                                 edit_front=pad_front)
         # Write sequence and EL to file.
         outfile.write(str(encoded_seq) + '\t' + str(exp_level) + '\n')
         # out_dict[line_number] = (encoded_seq, exp_level)

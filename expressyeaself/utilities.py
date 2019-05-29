@@ -39,7 +39,7 @@ def smart_open(filename, mode='r'):
     if len(filename) > 3 and filename.endswith('.gz'):
         file = gzip.open(filename, mode)
     else:
-        file = open(filename,mode);
+        file = open(filename, mode);
 
     return file
 
