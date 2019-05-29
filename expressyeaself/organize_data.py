@@ -93,8 +93,8 @@ def get_max_min_mode_length_of_seqs(input_seqs):
         line = check_valid_line(line)
         if line == 'skip_line':
             continue
-            seq, exp_level = separate_seq_and_el_data(line)
-            seq_lengths.append(len(seq))
+        seq, exp_level = separate_seq_and_el_data(line)
+        seq_lengths.append(len(seq))
     max_length = max(seq_lengths)
     min_length = min(seq_lengths)
     modal_length = max(set(seq_lengths), key=seq_lengths.count)
