@@ -105,7 +105,7 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     raw_data = input_seqs
     # Define final output file path
     time_stamp = get_time_stamp()
-    relative_path = '../example/processed_data/' + time_stamp
+    relative_path = 'example/processed_data/' + time_stamp
     processed_data = os.path.join(os.getcwd(), relative_path)
     # Create log file to write reports to
     if report_loss or report_times:
