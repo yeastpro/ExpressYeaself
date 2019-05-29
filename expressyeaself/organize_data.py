@@ -136,7 +136,7 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
     (takes value of None).'
     # Functionality
     # Defining the path name of the output file.
-    relative_path = '../example/'
+    relative_path = 'example/'
     time_stamp = get_time_stamp()
     if scaffold_type is None:
         relative_path += ('other_scaffolds/' + time_stamp +
@@ -287,7 +287,7 @@ def split_scaffolds_by_type(infile):
     types = scaff_df['Scaffold type'].unique()
     for type in types:
         # Create a new output file for each unique type of scaffold
-        relative_path = '../example/' + type + '_scaffolds.txt'
+        relative_path = 'example/' + type + '_scaffolds.txt'
         absolute_path = os.path.join(os.getcwd(), relative_path)
         outfile = smart_open(absolute_path, 'w')
         # Reduce scaffold data to only data of the current type

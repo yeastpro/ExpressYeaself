@@ -59,7 +59,7 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     # Functionality
     # Define absolute path of output file
     time_stamp = get_time_stamp() # get time stamp for unique file naming
-    relative_path = ('../example/encoded_data/' + time_stamp +
+    relative_path = ('example/encoded_data/' + time_stamp +
         '_encoded_sequences')
     if pad_sequences:
         if pad_front:
@@ -76,7 +76,7 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     absolute_path = os.path.join(os.getcwd(), relative_path)
     # Open input and output files
     infile = smart_open(input_seqs, 'r')
-    # outfile = smart_open(absolute_path, 'w')
+    outfile = smart_open(absolute_path, 'w')
     # Encode and pad each sequence and write it to file with expression level
     max_length, _, _ = organize.get_max_min_mode_length_of_seqs(input_seqs)
     line_number = 1
@@ -109,14 +109,14 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
             encoded_seq = resize_array(encoded_seq, resize_to=resize_len,
                                         edit_front=pad_front)
         # Write sequence and EL to file.
-        # outfile.write(str(encoded_seq) + '\t' + str(exp_level) + '\n')
-        out_dict[line_number] = (encoded_seq, exp_level)
+        outfile.write(str(encoded_seq) + '\t' + str(exp_level) + '\n')
+        # out_dict[line_number] = (encoded_seq, exp_level)
     # Close the input and output files
     infile.close()
-    # outfile.close()
+    outfile.close()
 
-    # return absolute_path
-    return out_dict
+    return absolute_path
+    # return out_dict
 
 def one_hot_encode_sequence(promoter_seq):
     """

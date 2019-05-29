@@ -101,7 +101,7 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
     # Functionality
     # Defining the pathname for the output file.
     time_stamp = get_time_stamp() # Get unique time stamp for file naming
-    relative_path = ('../example/' + scaffold_type + '_data/' + time_stamp +
+    relative_path = ('example/' + scaffold_type + '_data/' + time_stamp +
         '_' + scaffold_type + '_seqs_flanks_removed.txt')
     absolute_path = os.path.join(os.getcwd(), relative_path)
     # Opening the input and output files.
@@ -189,14 +189,14 @@ def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
     type must either be passed as "pTpA" or "Abf1TATA".'
     # Functionality
     time_stamp = get_time_stamp() # get time stamp for unique file naming
-    relative_path = ('../example/' + scaffold_type + '_data/' + time_stamp +
+    relative_path = ('example/' + scaffold_type + '_data/' + time_stamp +
         '_' + scaffold_type + '_seqs_inserted_into_scaffold.txt')
     absolute_path = os.path.join(os.getcwd(), relative_path)
     # Open input and output files
     infile = smart_open(input_seqs, 'r')
     outfile = smart_open(absolute_path, 'w')
     # Retrieve the scaffold sequence
-    scaff_directory = '../example/' + scaffold_type + '_data/'
+    scaff_directory = 'example/' + scaffold_type + '_data/'
     scaff_rel_path = scaff_directory + scaffold_type + '_scaffold.txt'
     scaff_abs_path = os.path.join(os.getcwd(), scaff_rel_path)
     scaff_file = smart_open(scaff_abs_path, 'r')
