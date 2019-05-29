@@ -16,21 +16,30 @@ Through predictive modeling, _ExpressYeaself_ aims to develop a greater understa
 
 ## Components
 
-(Flow Chart of how software works here, including information about the layers and parametrization.)
+(Flow Chart of package consisting of three different neural networks combined together, 
+including information about the layers and parametrization.)
 
 ### Data cleaning
 _ExpressYeaself_ will use combined publicly available data from www.yeastract.com, yetfasco.ccbr.utoronto.ca/ and www.yestss.org/ as training data. This combination will require some cleaning to ensure uniformity, as well as encoding of gene sequences. 
 
 ### Cross-Validation of existing models
-Existing models developed by Carl G. de Boer _et al._ will be cross validate. We will also perform the:  
+Existing models developed by Carl G. de Boer _et al._ will be used as a baseline to compare the 
+efficiency of the _ExpressYeaself_ model. We will also perform the:  
   
 * Regularization the motif sequences  
 * Pair transcription factor effects with protein expressions
 
 ### Predictive Models
-Most likely will employ a convolutional neural network (CNN) trained on data as used by Carl G. de Boer in his work on [cis-regulatory models](https://github.com/Carldeboer/CisRegModels). Our model will be tested on the combined data from www.yeastract.com and other associated databases, with comparison to experimental values.
+This model will employ the use of a convolutional neural network (CNN), a long short term memory 
+network (LSTM) and a 1D locally connected netowrk as three separate systems, which are then combined 
+after their completing to determine an overall efficiency value. The data will be trained on both pTpA 
+and Abf1TATA data used by Carl G. de Boer in his work on [cis-regulatory models]
+(https://github.com/Carldeboer/CisRegModels). This will involve manipulation of hyperparameters to 
+deliver the most effective model for both sequence types.
 
 ## Implications
 
-Better understanding of genetic structural motifs that affect protein expression in yeast will eventually allow the process of protein synthesis for the development of _human_ therapeutics (such as insulin) to be greatly improved with respect to time, cost and efficiency.
+Better understanding of genetic structural motifs that affect protein expression in yeast will eventually
+allow the process of protein synthesis for the development of _human_ therapeutics (such as insulin) to
+be greatly improved with respect to time, cost, environmental consciousness and efficiency.
  
