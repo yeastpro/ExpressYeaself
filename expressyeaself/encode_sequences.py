@@ -19,7 +19,7 @@ MAPPING =  {'A' : [1,0,0,0,0],
 METHODS = ['One-Hot']
 
 def encode_sequences_with_method(input_seqs, method='One-Hot',
-                                scale_els=True):
+                                scale_els=True, model_type='1DCNN'):
     """
     A wrapper function that encodes all of the sequences in an
     input file according to the specified method, and returns
@@ -47,22 +47,34 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         -1 and 1, corresponding to the min and max values
         respectively.
 
+        model_type (str) -- the type of model being used. Controls
+        the shape of the returned list that contains the encoded
+        sequences. Must be one of: '1DCNN' (for 1D-convolutional
+        net), '1DLOCCON' (for 1D-locally connected net), or 'LSTM'
+        (for Long-Short-Term-Memory net).
+
     Returns:
     -----
         encoded_seqs (numpy.ndarray) -- a list of all the sequences
         in the input file, encoded with the specified method. Each
-        element (i.e. each encoded sequence) is of type list.
+        element (i.e. each encoded sequence) is of type list. Shape
+        of this array depends on 'model_type'. For example, for an
+        input file containing 10000 sequences, each of length 257,
+        where the length of each base vector is 5 (corresponding to
+        bases A,T,G,C,N), the output shapes of encoded_seqs for each
+        model is as follows:
+        '1DCONV'   ===> (10000, 257, 5)
+        '1DLOCCON' ===> (10000, 257, 5)
+        'LSTM'     ===> (10000, 1, 1285) where 1285=257*5
 
         exp_levels (numpy.ndarray) -- a list of all the expression
         levels associated with the sequences. Each element (i.e.
         each EL) is of type float. Values scaled to between -1 and
         1 if argument 'scale_els=True'.
 
-        min (float) -- the minimum expression level value in the
-        input file.
-
         max (float) -- the maximum expression level value in the
-        input file.
+        input file. Returned only if 'scale_els=True'.
+
     """
     # Assertions
     assert isinstance(input_seqs, str), 'TypeError: Input file path must be \
@@ -81,6 +93,7 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         file must be of the form: "length_of_each_sequence\t<###>" where\
         <###> is the length of every sequence in the file. Assumes\
         homogeneity and/or padding of sequences.'
+    assert isinstance()
     # Functionality
     # Open input
     infile = smart_open(input_seqs, 'r')
@@ -115,12 +128,13 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     infile.close()
     # Scale expression level values to between -1 and 1S
     if scale_els:
-        output_data=[]
-        max_value=raw_data['output'].max()
-        for output in raw_data['output']:
-            output=output/max_value
-            output_data.append(output)
+        max_value = exp_levels.max()
+        index = -1
+        for el in exp_levels:
+            index += 1
+            exp_levels[index] = el / max_value
         output_data=np.array(output_data).reshape(data_length, 1, 1)
+
     return encoded_seqs, exp_levels
 
 def one_hot_encode_sequence(promoter_seq):
