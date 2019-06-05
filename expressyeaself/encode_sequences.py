@@ -113,11 +113,14 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         exp_levels[line_number] = exp_level
     # Close the input file
     infile.close()
-    # Scale expression level values to between -1 and 1
-    # if scale_els:
-
-
-
+    # Scale expression level values to between -1 and 1S
+    if scale_els:
+        output_data=[]
+        max_value=raw_data['output'].max()
+        for output in raw_data['output']:
+            output=output/max_value
+            output_data.append(output)
+        output_data=np.array(output_data).reshape(data_length, 1, 1)
     return encoded_seqs, exp_levels
 
 def one_hot_encode_sequence(promoter_seq):
