@@ -114,8 +114,8 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     # Close the input file
     infile.close()
     # Scale expression level values to between -1 and 1
-    if scale_els:
-        
+    # if scale_els:
+
 
 
     return encoded_seqs, exp_levels
