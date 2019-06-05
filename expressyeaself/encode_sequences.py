@@ -134,7 +134,8 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
             index += 1
             exp_levels[index] = el / max_value
         output_data=np.array(output_data).reshape(data_length, 1, 1)
-
+    sequence_matrix=raw_matrix.reshape(data_amount,-1)
+    one_hot_sequence_matrix=sequence_matrix.reshape(data_amount,1,sequence_length*5)
     return encoded_seqs, exp_levels
 
 def one_hot_encode_sequence(promoter_seq):
