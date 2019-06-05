@@ -10,42 +10,59 @@ from expressyeaself.utilities import smart_open as smart_open
 from expressyeaself.utilities import get_time_stamp as get_time_stamp
 
 BASES = ['A','T','G','C']
+MAPPING =  {'A' : [1,0,0,0,0],
+            'T' : [0,1,0,0,0],
+            'G' : [0,0,1,0,0],
+            'C' : [0,0,0,1,0],
+            'N' : [0,0,0,0,1],
+            'P' : [0,0,0,0,0]}
 METHODS = ['One-Hot']
 
-def encode_sequences_with_method(input_seqs, method='One-Hot'):
+def encode_sequences_with_method(input_seqs, method='One-Hot',
+                                scale_els=True):
     """
     A wrapper function that encodes all of the sequences in an
-    input file according to the specified method, pads them to
-    the maximum sequence length (if specified), and writes the
-    them to an output file along with their expression levels
-    (tab separated).
+    input file according to the specified method, and returns
+    them in a list, as well as returning the associated expression
+    levels in a separate list.
 
     Args:
     -----
-        input_seqs (str) -- the absolute path of the file containing
-        all of the input sequences to be encoded.
+        input_seqs (str) -- absolute path of the file containing
+        all of the input sequences to be encoded, tab-separated
+        withtheir associated expression levels. The first line of
+        the file must be the number of sequences in the file, of
+        the format: "number_of_seqs_in_file\t<###>" where <###> is
+        the number of sequences in the file. The second line in the
+        file must be the length to which all sequences are padded,
+        of the format: "length_of_each_sequence\t<###>" where <###>
+        is the length of every sequence in the file. Assumes
+        homogeneity and/or padding of sequences.
 
         method (str) -- the method by which the sequence should be
         encoded. Must choose from: 'One-Hot'. Default: 'One-Hot'
 
-        # pad_sequences (bool) -- If True will pad the sequences with
-        # null vectors to be the length of the longest sequence in the
-        # input file. If False will not change their length.
-        # Default: True.
-        #
-        # extra_padding (int) -- the number of vectors greater than the
-        # maximum sequence length to pad each encoded sequence to.
-        # Default: 0.
-        #
-        # pad_front (bool) -- whether to pad the front or end of the
-        # encoded sequences, if pad_sequences is specified to be True.
-        # Default: False (will therefore pad the ends).
+        scale_els (bool) -- if True (default), scales all of the
+        expression levels in the output list exp_levels to between
+        -1 and 1, corresponding to the min and max values
+        respectively.
 
     Returns:
     -----
-        absolute_path (list) -- the absolute path of the file containing
-        all of the encoded sequences and their expression levels, tab
-        separated.
+        encoded_seqs (numpy.ndarray) -- a list of all the sequences
+        in the input file, encoded with the specified method. Each
+        element (i.e. each encoded sequence) is of type list.
+
+        exp_levels (numpy.ndarray) -- a list of all the expression
+        levels associated with the sequences. Each element (i.e.
+        each EL) is of type float. Values scaled to between -1 and
+        1 if argument 'scale_els=True'.
+
+        min (float) -- the minimum expression level value in the
+        input file.
+
+        max (float) -- the maximum expression level value in the
+        input file.
     """
     # Assertions
     assert isinstance(input_seqs, str), 'TypeError: Input file path must be \
@@ -54,33 +71,29 @@ def encode_sequences_with_method(input_seqs, method='One-Hot'):
     a string.'
     assert method in METHODS, 'Must specify one the method of encoding the \
     sequence. Choose one of: %s' %(METHODS)
+    with smart_open(input_seqs, 'r') as f:
+        token, num_seqs = organize.separate_seq_and_el_data(f.readline())
+        assert token == 'number_of_seqs_in_file', 'First line of the input\
+        file must be of the form: "number_of_seqs_in_file\t<###>" where\
+        <###> is the number of sequences in the file.'
+        token, len_seqs = organize.separate_seq_and_el_data(f.readline())
+        assert token == 'length_of_each_sequence', 'Second line of the input\
+        file must be of the form: "length_of_each_sequence\t<###>" where\
+        <###> is the length of every sequence in the file. Assumes\
+        homogeneity and/or padding of sequences.'
     # Functionality
-    # Define absolute path of output file
-    time_stamp = get_time_stamp() # get time stamp for unique file naming
-    relative_path = ('example/encoded_data/' + time_stamp +
-        '_encoded_sequences')
-    # if pad_sequences:
-    #     if pad_front:
-    #         relative_path += '_front_padded'
-    #     else:
-    #         relative_path += '_end_padded'
-    # else:
-    #     relative_path += '_unpadded'
-    # if extra_padding != 0:
-    #     relative_path += '_extra_%s' %(extra_padding)
-    # else:
-    #     pass
-    relative_path += '.txt'
-    absolute_path = os.path.join(os.getcwd(), relative_path)
-    # Open input and output files
+    # Open input
     infile = smart_open(input_seqs, 'r')
-    outfile = smart_open(absolute_path, 'w')
+    # Initialize output lists, preallocating dimensions for speed.
+    encoded_seqs = np.zeros((int(num_seqs),int(len_seqs),5))
+    exp_levels = np.zeros(int(num_seqs))
     # Encode and pad each sequence and write it to file with expression level
     max_length, _, _ = organize.get_max_min_mode_length_of_seqs(input_seqs)
-    line_number = 1
-    # out_dict = {}
+    line_number = -3
     for line in infile:
         line_number += 1
+        if line_number == -2 or line_number == -1:
+            continue # skip the 1st line (just the num of seqs in file)
         line = organize.check_valid_line(line)
         if line == 'skip_line':
             continue
@@ -90,31 +103,22 @@ def encode_sequences_with_method(input_seqs, method='One-Hot'):
             try:
                 encoded_seq = one_hot_encode_sequence(seq)
             except Exception:
-                print('Error on line %s' %(line_number))
-                raise AssertionError
+                raise AssertionError('Error on line %s' %(line_number))
         else:
             # Another encoding method will go here
             # encoded_seq = another_encoding_method(seq)
             pass
-        # Pad
-        # if pad_sequences:
-        #     resize_len = max_length + extra_padding
-        # else:
-        #     resize_len = len(encoded_seq) + extra_padding
-        # if len(encoded_seq) == resize_len: # Doesn't need resizing
-        #     pass
-        # else:
-        #     encoded_seq = resize_array(encoded_seq, resize_to=resize_len,
-        #                                 edit_front=pad_front)
-        # Write sequence and EL to file.
-        outfile.write(str(encoded_seq) + '\t' + str(exp_level) + '\n')
-        # out_dict[line_number] = (encoded_seq, exp_level)
-    # Close the input and output files
+        # Reassign elements in ouput arrays
+        encoded_seqs[line_number] = encoded_seq
+        exp_levels[line_number] = exp_level
+    # Close the input file
     infile.close()
-    outfile.close()
+    # Scale expression level values to between -1 and 1
+    if scale_els:
+        
 
-    return absolute_path
-    # return out_dict
+
+    return encoded_seqs, exp_levels
 
 def one_hot_encode_sequence(promoter_seq):
     """
@@ -133,18 +137,12 @@ def one_hot_encode_sequence(promoter_seq):
     # Assertions
     assert isinstance(promoter_seq, str), 'TypeError: Input nucleotide \
     sequence must be a string.'
-    mapping =  {'A' : [1,0,0,0,0],
-                  'T' : [0,1,0,0,0],
-                'G' : [0,0,1,0,0],
-                'C' : [0,0,0,1,0],
-                'N' : [0,0,0,0,1],
-                'P' : [0,0,0,0,0]}
     invalid_indices = []
     index = -1 # Iterator for character index in promoter_seq string
     for nuc in promoter_seq:
         index += 1
         nuc = nuc.upper()
-        if nuc not in mapping.keys():
+        if nuc not in MAPPING.keys():
             invalid_indices.append(index) # Appends list of incorrect indices
     if len(invalid_indices) is not 0:
         raise Exception('Input nucleotide sequence contains a non ATGC or \
@@ -152,20 +150,8 @@ def one_hot_encode_sequence(promoter_seq):
     # Functionality
     one_hot_seq = []
     for nuc in promoter_seq:
-        # index = -1 # Iterator for index in BASES list
-        # nuc_vector = []
-        # if nuc == 'N':
-        #     nuc_vector = [0,0,0,0] # add a null vector
-        # else:
-        #     for base in BASES:
-        #         index += 1
-        #         if nuc == base:
-        #             nuc_vector.append(1)
-        #         else:
-        #             nuc_vector.append(0)
-        # one_hot_seq.append(nuc_vector)
         nuc = nuc.upper()
-        one_hot_seq.append(mapping[nuc])
+        one_hot_seq.append(MAPPING[nuc])
 
     return one_hot_seq
 
