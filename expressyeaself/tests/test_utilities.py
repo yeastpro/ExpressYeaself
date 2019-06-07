@@ -32,7 +32,7 @@ def test_get_time_stamp():
 
     return
 
-def test_get_line_count():
+def test_get_seq_count():
     """
     Tests the function that returns the line count of an input
     file.
