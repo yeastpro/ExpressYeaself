@@ -4,6 +4,7 @@ of the project.
 """
 import datetime as dt
 import gzip
+import expressyeaself.organize_data as organize
 import os
 
 def smart_open(filename, mode='r'):
@@ -14,18 +15,18 @@ def smart_open(filename, mode='r'):
 
     Args:
     -----
-    filename (str) -- the absolute pathname of the file
-    to be opened.
+        filename (str) -- the absolute pathname of the file
+        to be opened.
 
-    mode (str) -- the way in which the file should be
-    opened by the gzip.open command. Options: 'r', 'rb',
-    'a', 'ab', 'w', 'wb', 'x' or 'xb' for binary files,
-    and 'rt', 'at', 'wt', or 'xt' for text files.
-    Default: 'r'.
+        mode (str) -- the way in which the file should be
+        opened by the gzip.open command. Options: 'r', 'rb',
+        'a', 'ab', 'w', 'wb', 'x' or 'xb' for binary files,
+        and 'rt', 'at', 'wt', or 'xt' for text files.
+        Default: 'r'.
 
     Returns:
     -----
-    opened_file (file type) -- the opened file.
+        opened_file (file type) -- the opened file.
 
     ** Adapted from Carl de Boer's function in https://github.com/
     Carldeboer/CisRegModels/blob/master/CisRegModels/MYUTILS.py **
@@ -51,11 +52,11 @@ def get_time_stamp():
     '2019-05-17 17:04:19.923192' ---> '20190517170419923192'
     Args:
     -----
-    None
+        None
     Returns:
     -----
-    time_stamp (str) -- a unique numerical string of the
-    current time.
+        time_stamp (str) -- a unique numerical string of the
+        current time.
     """
     time_stamp = str(dt.datetime.now())
     time_stamp = time_stamp.replace(' ', '').replace('-', '')
@@ -63,27 +64,30 @@ def get_time_stamp():
 
     return time_stamp
 
-def get_line_count(infile):
+def get_seq_count(infile):
     """
-    Counts and returns the number of lines in a file.
+    Counts and returns the number of sequences in a file.
 
     Args:
     -----
-    infile (str) -- the absolute path for the input file.
+        infile (str) -- the absolute path for the input file.
 
     Returns:
     -----
-    line_count (int) -- the number of lines in the input file.
+        line_count (int) -- the number of sequences in the input file.
     """
     # Assertions
     assert os.path.exists(infile), 'Input file does not exist.'
     assert isinstance(infile, str), 'Path name for input file must be passed \
     as a string.'
     # Functionality
-    file = smart_open(infile, 'r')
     count = 0
-    for line in file:
-        count += 1
-    file.close()
+    with smart_open(infile, 'r') as file:
+        for line in file:
+            line = organize.check_valid_line(line)
+            if line == 'skip_line':
+                continue
+            else:
+                count += 1
 
     return count
