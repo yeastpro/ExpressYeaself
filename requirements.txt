@@ -5,4 +5,5 @@ pandas
 pytest
 seaborn
 tensorflow
+tqdm
 xlrd
