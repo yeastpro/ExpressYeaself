@@ -3,5 +3,6 @@ keras
 numpy
 pandas
 pytest
+seaborn
 tensorflow
 xlrd
