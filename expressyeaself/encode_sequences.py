@@ -17,6 +17,7 @@ MAPPING =  {'A' : [1,0,0,0,0],
             'N' : [0,0,0,0,1],
             'P' : [0,0,0,0,0]}
 METHODS = ['One-Hot']
+MODELS = ['1DCNN', '1DLOCCON', 'LSTM']
 
 def encode_sequences_with_method(input_seqs, method='One-Hot',
                                 scale_els=True, model_type='1DCNN'):
@@ -32,10 +33,10 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         all of the input sequences to be encoded, tab-separated
         withtheir associated expression levels. The first line of
         the file must be the number of sequences in the file, of
-        the format: "number_of_seqs_in_file\t<###>" where <###> is
+        the format: "#number_of_seqs_in_file\t<###>" where <###> is
         the number of sequences in the file. The second line in the
         file must be the length to which all sequences are padded,
-        of the format: "length_of_each_sequence\t<###>" where <###>
+        of the format: "#length_of_each_sequence\t<###>" where <###>
         is the length of every sequence in the file. Assumes
         homogeneity and/or padding of sequences.
 
@@ -84,59 +85,88 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     assert method in METHODS, 'Must specify one the method of encoding the \
     sequence. Choose one of: %s' %(METHODS)
     with smart_open(input_seqs, 'r') as f:
-        token, num_seqs = organize.separate_seq_and_el_data(f.readline())
+        # Parse first line of file containing info about num of seqs in file
+        first_line = organize.check_valid_line(f.readline())
+        assert first_line != 'skip_line', 'Invalid first line of file. Must\
+        be of the form: "number_of_seqs_in_file\t<###>" where <###> is the\
+        number of sequences in the file.'
+        token, num_seqs = organize.separate_seq_and_el_data(first_line)
+        try:
+            num_seqs = int(num_seqs)
+        except ValueError:
+            raise AssertionError('Number of sequences on first line must be\
+            an integer.')
         assert token == 'number_of_seqs_in_file', 'First line of the input\
         file must be of the form: "number_of_seqs_in_file\t<###>" where\
         <###> is the number of sequences in the file.'
-        token, len_seqs = organize.separate_seq_and_el_data(f.readline())
+        # Parse 2nd line of file containing info about length of seqs in file
+        second_line = organize.check_valid_line(f.readline())
+        assert second_line != 'skip_line', 'Invalid second line of file.\
+        Must be of the form: "length_of_each_sequence\t<###>" where <###> is\
+        the length of every sequence in the file.'
+        token, len_seqs = organize.separate_seq_and_el_data(second_line)
+        try:
+            len_seqs = int(len_seqs)
+        except ValueError:
+            raise AssertionError('Sequence length on second line must be an\
+            integer.')
         assert token == 'length_of_each_sequence', 'Second line of the input\
         file must be of the form: "length_of_each_sequence\t<###>" where\
         <###> is the length of every sequence in the file. Assumes\
         homogeneity and/or padding of sequences.'
-    assert isinstance()
+    assert isinstance(scale_els, bool), 'scale_els argument must be passed\
+    as a bool.'
+    assert isinstance(model_type, str), 'model_type argument must be passed\
+    as a string.'
+    assert model_type in MODELS, 'Must specify model_type as one of the\
+    following: %s' %(MODELS)
     # Functionality
-    # Open input
+    # Open input file
     infile = smart_open(input_seqs, 'r')
     # Initialize output lists, preallocating dimensions for speed.
     encoded_seqs = np.zeros((int(num_seqs),int(len_seqs),5))
     exp_levels = np.zeros(int(num_seqs))
-    # Encode and pad each sequence and write it to file with expression level
-    max_length, _, _ = organize.get_max_min_mode_length_of_seqs(input_seqs)
+    # Encode sequences
     line_number = -3
     for line in infile:
         line_number += 1
-        if line_number == -2 or line_number == -1:
-            continue # skip the 1st line (just the num of seqs in file)
+        if line_number < 0:
+            continue # skip first 2 lines of the file
         line = organize.check_valid_line(line)
         if line == 'skip_line':
-            continue
+            continue # skip line if not a valid line
         seq, exp_level = organize.separate_seq_and_el_data(line)
-        # Encode
+        # Encode with One-Hot method
         if method == 'One-Hot':
             try:
                 encoded_seq = one_hot_encode_sequence(seq)
             except Exception:
                 raise AssertionError('Error on line %s' %(line_number))
+        # Encode with another method, i.e. embedding
         else:
             # Another encoding method will go here
             # encoded_seq = another_encoding_method(seq)
             pass
-        # Reassign elements in ouput arrays
+        # Assign encoded sequences and expression levels to output arrays
         encoded_seqs[line_number] = encoded_seq
         exp_levels[line_number] = exp_level
     # Close the input file
     infile.close()
-    # Scale expression level values to between -1 and 1S
+    # Reshape array if needed as input to LSTM model
+    if model_type == 'LSTM':
+        encoded_seqs = encoded_seqs.reshape(num_seqs, -1)
+        encoded_seqs = encoded_seqs.reshape(num_seqs, 1, (len_seqs * 5))
+    # Scale expression level values to between -1 and 1
     if scale_els:
-        max_value = exp_levels.max()
+        max_value = abs(max(exp_levels, key=abs)) # the absolute max value
         index = -1
-        for el in exp_levels:
-            index += 1
-            exp_levels[index] = el / max_value
-        output_data=np.array(output_data).reshape(data_length, 1, 1)
-    sequence_matrix=raw_matrix.reshape(data_amount,-1)
-    one_hot_sequence_matrix=sequence_matrix.reshape(data_amount,1,sequence_length*5)
-    return encoded_seqs, exp_levels
+        # numpy allows easy division of all elements at once
+        exp_levels = exp_levels / max_value
+    # If no scaling required
+    else:
+        max_value = None
+
+    return encoded_seqs, exp_levels, max_value
 
 def one_hot_encode_sequence(promoter_seq):
     """
