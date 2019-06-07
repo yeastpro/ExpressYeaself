@@ -113,7 +113,7 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
         if line == 'skip_line':
             continue
         seq, exp_level = organize.separate_seq_and_el_data(line)
-        deflanked_seq = remove_flanks_from_seq(seq, scaffold_type=scaffold_type)
+        deflanked_seq =remove_flanks_from_seq(seq,scaffold_type=scaffold_type)
         outfile.write(deflanked_seq + '\t' + str(exp_level) + '\n')
     # Close the input and output files.
     infile.close()

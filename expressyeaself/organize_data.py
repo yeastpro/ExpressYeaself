@@ -81,6 +81,12 @@ def get_max_min_mode_length_of_seqs(input_seqs):
     -----
         max_length (int) -- the length of the longest sequence in
         the input file.
+
+        min_length (int) -- the length of the shortest sequence in
+        the input file.
+
+        modal_length (int) -- the most common sequence length of
+        the sequences in the input file.
     """
     # Assertions
     assert isinstance(input_seqs, str), 'Path name for input file must be \
