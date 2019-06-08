@@ -1,17 +1,20 @@
 # Ignore notebook checkpoints
-.ipynb_checkpoints/*
-example/.ipynb_checkpoints/*
-expressyeaself/.ipynb_checkpoints/*
+.ipynb_checkpoints/
+example/.ipynb_checkpoints/
+expressyeaself/.ipynb_checkpoints/
 expressyeaself/tests/.ipynb_checkpoints/
 expressyeaself/models/.ipynb_checkpoints/
+example/processed_data/.ipynb_checkpoints/
 
 # Ignore pycaches
 expressyeaself/__pycache__/*
 expressyeaself/tests/__pycache__/*
+example/__pycache__/*
 
 # Ignore development notebooks
 1d_locally_connected.ipynb
 copy_ExampleNetworks.ipynb
+process_data.ipynb
 
 # Ignore large data files
 example/average*
@@ -21,9 +24,11 @@ example/other_scaffolds/*
 example/pTpA_data/2019*
 example/pTpA_data/average*
 example/processed_data/2019*
+example/processed_data/1000000*
 
 # Ignore files created by unit tests
 expressyeaself/tests/trial*
+expressyeaself/tests/test_files/*
 
 # Ignore notebooks created for unit test development
 expressyeaself/tests/*.ipynb
