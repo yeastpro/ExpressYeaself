@@ -3,8 +3,10 @@ This script contains the unit tests for the functions found in
 the organize_data.py script.
 """
 import expressyeaself.tests.context as context
+import os
 
 test = context.organize_data
+TEST_DIR = os.getcwd() + '/expressyeaself/tests/test_files/'
 
 def test_separate_seq_and_e_data():
     """
@@ -26,7 +28,7 @@ def test_check_valid_line():
     input file, containing a nucleotide sequence tab separated from
     its associated expression level.
     """
-
+    open(TEST_DIR + 'trial_check.txt', 'w')
     return
 
 def test_get_max_min_mode_length_of_seqs():
@@ -63,11 +65,20 @@ def test_remove_files():
 
     return
 
-def test_split_scaffolds_by_type():
+def test_get_num_and_len_of_seqs_from_file():
     """
-    Tests the function that splits an input excel file of scaffold
-    data by their type, outputting the different types to different
-    output files.
+    Tests the function that retrieves the number and lengths of the
+    sequences in an input file from the first 2 lines of the file
+    that contain this information.
     """
 
     return
+
+# def test_split_scaffolds_by_type():
+#     """
+#     Tests the function that splits an input excel file of scaffold
+#     data by their type, outputting the different types to different
+#     output files.
+#     """
+#
+#     return

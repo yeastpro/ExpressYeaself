@@ -4,6 +4,6 @@
 #from . import organize_data as organize
 
 from . import build_promoter 
-from . import construct_neural_net_input 
+from . import construct_neural_net 
 from . import encode_sequences 
 from . import organize_data 
