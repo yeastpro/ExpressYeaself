@@ -7,6 +7,7 @@ import gzip
 import expressyeaself.organize_data as organize
 import os
 
+
 def smart_open(filename, mode='r'):
     """
     A function to open a file. If the file is compressed
@@ -40,9 +41,10 @@ def smart_open(filename, mode='r'):
     if len(filename) > 3 and filename.endswith('.gz'):
         file = gzip.open(filename, mode)
     else:
-        file = open(filename, mode);
+        file = open(filename, mode)
 
     return file
+
 
 def get_time_stamp():
     """
@@ -63,6 +65,7 @@ def get_time_stamp():
     time_stamp = time_stamp.replace('.', '').replace(':', '')
 
     return time_stamp
+
 
 def get_seq_count(infile):
     """

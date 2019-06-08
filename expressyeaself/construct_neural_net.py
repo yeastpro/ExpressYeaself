@@ -4,6 +4,7 @@ and optimizing a neural network model.
 """
 import matplotlib.pyplot as plt
 
+
 def plot_results(hist):
     """
     Plots the model's accuracy and loss as functions of the
@@ -17,7 +18,7 @@ def plot_results(hist):
     -----
         plt () --
     """
-    # summarize history for accuracy
+    # Summarize history for accuracy
     plt.subplot(1, 2, 1)
     plt.plot(hist['acc'])
     plt.plot(hist['val_acc'])
@@ -26,7 +27,7 @@ def plot_results(hist):
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
 
-    # summarize history for loss
+    # Summarize history for loss
     plt.subplot(1, 2, 2)
     plt.plot(hist['loss'])
     plt.plot(hist['val_loss'])

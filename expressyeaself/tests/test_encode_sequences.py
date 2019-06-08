@@ -6,6 +6,7 @@ import expressyeaself.tests.context as context
 
 test = context.encode_sequences
 
+
 def test_encode_sequences_with_method():
     """
     Tests the wrapper function that encodes all promoter sequences
@@ -15,6 +16,7 @@ def test_encode_sequences_with_method():
 
     return
 
+
 def test_one_hot_encode_sequence():
     """
     Tests the function that encodes the string representation of a
@@ -22,9 +24,12 @@ def test_one_hot_encode_sequence():
     """
     seq = 'AAA'
     one_hot_seq = test.one_hot_encode_sequence(seq)
-    assert one_hot_seq == [[1,0,0,0,0],[1,0,0,0,0],[1,0,0,0,0]]
+    assert one_hot_seq == [[1, 0, 0, 0, 0],
+                           [1, 0, 0, 0, 0],
+                           [1, 0, 0, 0, 0]]
 
     return
+
 
 # def test_resize_array():
 #     """

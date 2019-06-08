@@ -7,6 +7,7 @@ import os
 
 test = context.utilities
 
+
 def test_smart_open():
     """
     Tests the function that decompresses (if compressed) and opens
@@ -25,12 +26,14 @@ def test_smart_open():
 
     return
 
+
 def test_get_time_stamp():
     """
     Tests the function that produces a unique time stamp.
     """
 
     return
+
 
 def test_get_seq_count():
     """
