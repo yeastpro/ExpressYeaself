@@ -3,5 +3,8 @@ keras
 numpy
 pandas
 pytest
+seaborn
 tensorflow
+tf-nightly
+tqdm
 xlrd

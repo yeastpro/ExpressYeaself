@@ -24,8 +24,8 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     """
     A wrapper function that encodes all of the sequences in an
     input file according to the specified method, and returns
-    them in a list, as well as returning the associated expression
-    levels in a separate list.
+    them in a numpy array, as well as returning the associated
+    expression levels in a separate numpy array.
 
     Args:
     -----
@@ -33,10 +33,10 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         all of the input sequences to be encoded, tab-separated
         withtheir associated expression levels. The first line of
         the file must be the number of sequences in the file, of
-        the format: "#number_of_seqs_in_file\t<###>" where <###> is
+        the format: "number_of_seqs_in_file\t<###>" where <###> is
         the number of sequences in the file. The second line in the
         file must be the length to which all sequences are padded,
-        of the format: "#length_of_each_sequence\t<###>" where <###>
+        of the format: "length_of_each_sequence\t<###>" where <###>
         is the length of every sequence in the file. Assumes
         homogeneity and/or padding of sequences.
 
@@ -73,7 +73,7 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         each EL) is of type float. Values scaled to between -1 and
         1 if argument 'scale_els=True'.
 
-        max (float) -- the maximum expression level value in the
+        abs_max_el (float) -- the maximum expression level value in the
         input file. Returned only if 'scale_els=True'.
 
     """
@@ -84,36 +84,6 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     a string.'
     assert method in METHODS, 'Must specify one the method of encoding the \
     sequence. Choose one of: %s' %(METHODS)
-    with smart_open(input_seqs, 'r') as f:
-        # Parse first line of file containing info about num of seqs in file
-        first_line = organize.check_valid_line(f.readline())
-        assert first_line != 'skip_line', 'Invalid first line of file. Must\
-        be of the form: "number_of_seqs_in_file\t<###>" where <###> is the\
-        number of sequences in the file.'
-        token, num_seqs = organize.separate_seq_and_el_data(first_line)
-        try:
-            num_seqs = int(num_seqs)
-        except ValueError:
-            raise AssertionError('Number of sequences on first line must be\
-            an integer.')
-        assert token == 'number_of_seqs_in_file', 'First line of the input\
-        file must be of the form: "number_of_seqs_in_file\t<###>" where\
-        <###> is the number of sequences in the file.'
-        # Parse 2nd line of file containing info about length of seqs in file
-        second_line = organize.check_valid_line(f.readline())
-        assert second_line != 'skip_line', 'Invalid second line of file.\
-        Must be of the form: "length_of_each_sequence\t<###>" where <###> is\
-        the length of every sequence in the file.'
-        token, len_seqs = organize.separate_seq_and_el_data(second_line)
-        try:
-            len_seqs = int(len_seqs)
-        except ValueError:
-            raise AssertionError('Sequence length on second line must be an\
-            integer.')
-        assert token == 'length_of_each_sequence', 'Second line of the input\
-        file must be of the form: "length_of_each_sequence\t<###>" where\
-        <###> is the length of every sequence in the file. Assumes\
-        homogeneity and/or padding of sequences.'
     assert isinstance(scale_els, bool), 'scale_els argument must be passed\
     as a bool.'
     assert isinstance(model_type, str), 'model_type argument must be passed\
@@ -124,7 +94,8 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     # Open input file
     infile = smart_open(input_seqs, 'r')
     # Initialize output lists, preallocating dimensions for speed.
-    encoded_seqs = np.zeros((int(num_seqs),int(len_seqs),5))
+    num_seqs,len_seqs = organize.get_num_and_len_of_seqs_from_file(input_seqs)
+    encoded_seqs = np.zeros((int(num_seqs),int(len_seqs),5)).astype(int)
     exp_levels = np.zeros(int(num_seqs))
     # Encode sequences
     line_number = -3
@@ -158,15 +129,15 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         encoded_seqs = encoded_seqs.reshape(num_seqs, 1, (len_seqs * 5))
     # Scale expression level values to between -1 and 1
     if scale_els:
-        max_value = abs(max(exp_levels, key=abs)) # the absolute max value
+        abs_max_el = abs(max(exp_levels, key=abs)) # the absolute max value
         index = -1
         # numpy allows easy division of all elements at once
-        exp_levels = exp_levels / max_value
+        exp_levels = exp_levels / abs_max_el
     # If no scaling required
     else:
-        max_value = None
+        abs_max_el = None
 
-    return encoded_seqs, exp_levels, max_value
+    return encoded_seqs, exp_levels, abs_max_el
 
 def one_hot_encode_sequence(promoter_seq):
     """
