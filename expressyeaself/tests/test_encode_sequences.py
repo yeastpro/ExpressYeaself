@@ -8,16 +8,10 @@ test = context.encode_sequences
 
 def test_encode_sequences_with_method():
     """
-    Tests the wrapper function that encodes a promoter sequence by a
-    specified method.
+    Tests the wrapper function that encodes all promoter sequences
+    in an input file by a specified method.
     """
-    trial_promoter = 'TCGTACGTACGTCGATGCTG'
-    method = 'One-Hot'
-    # try:
-    encoded_seq = test.encode_sequences_with_method(trial_promoter, method)
-    # except Exception as e:
-        # assert is instance(e, TypeError)
-    # assert isinstance(encoded_seq, TYPE)
+    # test_file = 
 
     return
 
