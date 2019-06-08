@@ -2,10 +2,11 @@
 A script containing unit tests for the functions in the
 build_promoter.py script.
 """
-import codecs
+# import codecs
 import expressyeaself.tests.context as context
 
 test = context.build_promoter
+
 
 def test_remove_flanks_from_seq():
     """
@@ -15,6 +16,7 @@ def test_remove_flanks_from_seq():
 
     return
 
+
 def test_remove_flanks_from_all_seqs():
     """
     Tests the function that removes the constant flanking sequences
@@ -22,6 +24,7 @@ def test_remove_flanks_from_all_seqs():
     """
 
     return
+
 
 def test_insert_seq_into_scaffold():
     """
@@ -40,6 +43,7 @@ def test_insert_seq_into_scaffold():
 
     return
 
+
 def test_insert_all_seq_into_one_scaffold():
     """
     Tests the function that inserts mutliple olignonucleotide
@@ -49,6 +53,7 @@ def test_insert_all_seq_into_one_scaffold():
     """
 
     return
+
 
 def test_pad_sequences():
     """

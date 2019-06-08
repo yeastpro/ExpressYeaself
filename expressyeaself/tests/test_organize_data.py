@@ -8,6 +8,7 @@ import os
 test = context.organize_data
 TEST_DIR = os.getcwd() + '/expressyeaself/tests/test_files/'
 
+
 def test_separate_seq_and_e_data():
     """
     Test the function that takes a line of an input file and
@@ -22,6 +23,7 @@ def test_separate_seq_and_e_data():
 
     return
 
+
 def test_check_valid_line():
     """
     Tests the function that checks the validity of a line from an
@@ -31,6 +33,7 @@ def test_check_valid_line():
     open(TEST_DIR + 'trial_check.txt', 'w')
     return
 
+
 def test_get_max_min_mode_length_of_seqs():
     """
     Tests the function that returns the maximum, minimum, and modal
@@ -39,6 +42,7 @@ def test_get_max_min_mode_length_of_seqs():
 
     return
 
+
 def test_pull_homogenous_seqs():
     """
     Tests the function that pulls all sequences of modal length
@@ -46,6 +50,7 @@ def test_pull_homogenous_seqs():
     """
 
     return
+
 
 def test_check_oligonucleotide_flanks():
     """
@@ -56,6 +61,7 @@ def test_check_oligonucleotide_flanks():
 
     return
 
+
 def test_remove_files():
     """
     Tests the function that takes as input a list containing the
@@ -65,6 +71,7 @@ def test_remove_files():
 
     return
 
+
 def test_get_num_and_len_of_seqs_from_file():
     """
     Tests the function that retrieves the number and lengths of the
@@ -73,6 +80,7 @@ def test_get_num_and_len_of_seqs_from_file():
     """
 
     return
+
 
 # def test_split_scaffolds_by_type():
 #     """

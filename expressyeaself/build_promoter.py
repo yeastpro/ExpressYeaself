@@ -3,14 +3,14 @@ This script contains functions to generate unique promoter sequences
 by joining random oligonucleotide and scaffold sequences together.
 For example: ATGCATGC inserted into AAAANNNNNNNNTTTT would give
 AAAAATGCATGCTTTT.
-
 """
 import expressyeaself.organize_data as organize
-import os
-import pandas as pd
-from expressyeaself.utilities import smart_open as smart_open
 from expressyeaself.utilities import get_time_stamp as get_time_stamp
-import xlrd
+from expressyeaself.utilities import smart_open as smart_open
+import os
+# import pandas as pd
+# import xlrd
+
 
 def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
     """
@@ -53,13 +53,14 @@ def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
         flank_B = 'GGTTTATTGTTTATAAAAA'
 
     assert oligo_seq.startswith(flank_A), "Scaffold type specified as %s but \
-    input sequence doesn't start with appropriate flank seq" %(scaffold_type)
+    input sequence doesn't start with appropriate flank seq" % (scaffold_type)
     assert oligo_seq.endswith(flank_B), "Scaffold type specified as %s but \
-    input sequence doesn't end with appropriate flank seq" %(scaffold_type)
+    input sequence doesn't end with appropriate flank seq" % (scaffold_type)
     oligo_seq = oligo_seq.replace(flank_A, '')
     oligo_seq = oligo_seq.replace(flank_B, '')
 
     return oligo_seq
+
 
 def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
     """
@@ -95,14 +96,15 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
     scaffold type must be either pTpA or Abf1TATA.'
     # Check that all of the flank sequences are the same in all
     # sequences in the input file.
-    incorrect = organize.check_oligonucleotide_flanks(input_seqs, scaffold_type)
+    incorrect = organize.check_oligonucleotide_flanks(input_seqs,
+                                                      scaffold_type)
     assert len(incorrect) == 0, 'Not all sequences in input file have same \
     flanking sequences.'
     # Functionality
     # Defining the pathname for the output file.
-    time_stamp = get_time_stamp() # Get unique time stamp for file naming
+    time_stamp = get_time_stamp()  # Get unique time stamp for file naming
     relative_path = ('example/' + scaffold_type + '_data/' + time_stamp +
-        '_' + scaffold_type + '_seqs_flanks_removed.txt')
+                     '_' + scaffold_type + '_seqs_flanks_removed.txt')
     absolute_path = os.path.join(os.getcwd(), relative_path)
     # Opening the input and output files.
     infile = smart_open(input_seqs, 'r')
@@ -113,13 +115,14 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
         if line == 'skip_line':
             continue
         seq, exp_level = organize.separate_seq_and_el_data(line)
-        deflanked_seq =remove_flanks_from_seq(seq,scaffold_type=scaffold_type)
+        deflanked_seq = remove_flanks_from_seq(seq, scaffold_type)
         outfile.write(deflanked_seq + '\t' + str(exp_level) + '\n')
     # Close the input and output files.
     infile.close()
     outfile.close()
 
     return absolute_path
+
 
 def insert_seq_into_scaffold(seq, scaffold):
     """
@@ -150,11 +153,12 @@ def insert_seq_into_scaffold(seq, scaffold):
     assert isinstance(scaffold, str), 'TypeError: Input scaffold sequence \
     must be a string.'
     # Functionality
-    var_start = scaffold.find('N') # find index where variable region starts
+    var_start = scaffold.find('N')  # find index where variable region starts
     var_end = scaffold.rfind('N')  # reverse find where variable region ends
     complete_seq = scaffold[:var_start] + seq + scaffold[var_end+1:]
 
     return complete_seq
+
 
 def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
     """
@@ -188,9 +192,9 @@ def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
     assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Scaffold \
     type must either be passed as "pTpA" or "Abf1TATA".'
     # Functionality
-    time_stamp = get_time_stamp() # get time stamp for unique file naming
+    time_stamp = get_time_stamp()  # get time stamp for unique file naming
     relative_path = ('example/' + scaffold_type + '_data/' + time_stamp +
-        '_' + scaffold_type + '_seqs_inserted_into_scaffold.txt')
+                     '_' + scaffold_type + '_seqs_inserted_into_scaffold.txt')
     absolute_path = os.path.join(os.getcwd(), relative_path)
     # Open input and output files
     infile = smart_open(input_seqs, 'r')
@@ -215,6 +219,7 @@ def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
     scaff_file.close()
 
     return absolute_path
+
 
 def pad_sequences(input_seqs, pad_front=False, extra_padding=0):
     """
@@ -272,7 +277,7 @@ def pad_sequences(input_seqs, pad_front=False, extra_padding=0):
                 padding_seq = 'P' * difference
                 if pad_front:
                     padded_seq = padding_seq + seq
-                else: # pad the end of the sequence
+                else:  # pad the end of the sequence
                     padded_seq = seq + padding_seq
             else:
                 raise Exception('Sequence length longer than padding length.')
@@ -281,6 +286,7 @@ def pad_sequences(input_seqs, pad_front=False, extra_padding=0):
     outfile.close()
 
     return absolute_path
+
 
 # def extract_scaffold_seqs(infile, outfile):
 #     """
@@ -305,8 +311,8 @@ def pad_sequences(input_seqs, pad_front=False, extra_padding=0):
 #     string.'
 #     assert isinstance(outfile, str), 'Pathname for output file must be a \
 #     string.'
-#     assert infile != outfile, 'Output file must have a different pathname as \
-#     the Input file; otherwise Input data will be overwritten!'
+#     assert infile != outfile, 'Output file must have a different pathname\
+#     as the Input file; otherwise Input data will be overwritten!'
 #     # Functionality
 #     scaff_df = pd.read_csv(infile)
 #     scaff_out = smart_open(outfile, 'w+')
