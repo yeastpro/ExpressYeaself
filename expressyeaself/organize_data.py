@@ -169,7 +169,12 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     print('Padding sequences...')
     input_seqs = build.pad_sequences(input_seqs, pad_front=pad_front,
                                     extra_padding=extra_padding)
-    processed_data += '_padded'
+    if not homogeneous: # then they will have been padded
+        processed_data += '_padded_at'
+        if pad_front:
+            processed_data += '_front'
+        else:
+            processed_data += '_back'
     if extra_padding != 0:
         processed_data += '_%s_extra' %(extra_padding)
     if report_loss:
@@ -206,7 +211,7 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
         print(text)
         report.write(text + '\n')
     # Write the number of seqs and length of seqs to the start of file
-    write_num_and_len_of_seqs_to_file(input_seqs)
+    write_num_and_len_of_seqs_to_file(processed_data)
     # Report loss
     if report_loss:
         report.write('\nLine counts at each step of the process:\n')
