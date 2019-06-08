@@ -227,7 +227,7 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     # Remove intermediate files
     if remove_files:
         print('\nRemoving intermediate files...')
-        remove_files(created_files)
+        remove_file_list(created_files)
         print('Files successfully removed.')
     print('Process complete.')
     # Report total time taken
@@ -472,7 +472,7 @@ def check_oligonucleotide_flanks(seq_infile, scaffold_type):
 
     return incorrect_lines
 
-def remove_files(files):
+def remove_file_list(files):
     """
     Takes a list of path names for files and deletes each of the
     files from the local system.
@@ -532,7 +532,11 @@ def write_num_and_len_of_seqs_to_file(input_seqs):
     num_seqs = get_seq_count(input_seqs)
     with smart_open(input_seqs, 'r') as f:
         line = f.readline()
-        seq, _ = organize.separate_seq_and_el_data(line)
+        try:
+            line = check_valid_line(line)
+        except line == 'skip_line':
+            raise AssertionError('First line is not valid.')
+        seq, _ = separate_seq_and_el_data(line)
         len_seqs = len(seq) # assumes all sequences padded to same length
     with smart_open(input_seqs, "r+") as f:
         contents = f.read()
@@ -611,41 +615,92 @@ def get_num_and_len_of_seqs_from_file(input_seqs):
 
     return num_seqs, len_seqs
 
-def split_scaffolds_by_type(infile):
+def create_sample_data(input_seqs, sample_size):
     """
-    Splits the scaffold data contained within an Excel file
-    found at https://www.biorxiv.org/highwire/filestream/85247/
-    field_highwire_adjunct_files/1/224907-2.xlsxin by scaffold
-    type, creating different output files for each type that
-    contain all the scaffold IDs and sequences (tab separated).
-    Output files are created in the ExpressYeaself/example
-    directory.
+    Takes a sample of size 'sample_size' from an input file
+    containing sequences and their associated expression levels,
+    and writes them to a separate file. The format of the first
+    2 lines of the resulting output file will be of the format:
+    "
+    number_of_seqs_in_file\t<###>
+    length_of_each_sequence\t<$$$>
+    "
+    where '<###>' is the number of sequences in the file, and
+    '<$$$>'is the length to which every sequence in the file is
+    padded.
 
     Args:
     -----
-        scaff_infile (str) -- the absolute path for the input file
-        containing all the scaffold data.
+        input_seqs (str) -- the absolute path of the input file
+        containing sequence adn expression level data to sample.
+
+        sample_size (int) -- the number of samples to take from
+        the input file.
 
     Returns:
     -----
-        None
+        sample_data (str) -- the absolute path of the output file
+        containing the sample of sequence and expression level
+        data.
     """
     # Assertions
-    assert isinstance(infile, str), 'TypeError: input file pathname must be \
-    a string.'
-    assert os.path.exists(infile), 'Input file does not exist.'
+    assert isinstance(input_seqs, str), 'Input sequences file path must be\
+    passed as a string.'
+    assert os.path.exists(input_seqs), 'Input file does not exist.'
+    assert isinstance(sample_size, int), 'Number of sequences to sample must\
+    be passed as an integer.'
     # Functionality
-    scaff_df = pd.read_excel(infile, index_col = 'Scaffold ID')
-    types = scaff_df['Scaffold type'].unique()
-    for type in types:
-        # Create a new output file for each unique type of scaffold
-        relative_path = 'example/' + type + '_scaffolds.txt'
-        absolute_path = os.path.join(os.getcwd(), relative_path)
-        outfile = smart_open(absolute_path, 'w')
-        # Reduce scaffold data to only data of the current type
-        type_df = scaff_df[scaff_df['Scaffold type'] == type]
-        for index, row in type_df.iterrows():
-            outfile.write(index + '\t' + row['Sequence'] + '\n')
-        outfile.close()
+    index = input_seqs.rfind('/') + 1
+    insert = str(sample_size) + '_from_'
+    output_seqs = input_seqs[:index] + insert + input_seqs[index:]
+    with smart_open(input_seqs, 'r') as inf:
+        with smart_open(output_seqs, 'w') as outf:
+            count = -1
+            while count < sample_size + 1:
+                count += 1
+                line = inf.readline()
+                if count < 2: # skip the first 2 lines
+                    continue
+                outf.write(line)
+    write_num_and_len_of_seqs_to_file(output_seqs)
 
-    return
+    return output_seqs
+
+# def split_scaffolds_by_type(infile):
+#     """
+#     Splits the scaffold data contained within an Excel file
+#     found at https://www.biorxiv.org/highwire/filestream/85247/
+#     field_highwire_adjunct_files/1/224907-2.xlsxin by scaffold
+#     type, creating different output files for each type that
+#     contain all the scaffold IDs and sequences (tab separated).
+#     Output files are created in the ExpressYeaself/example
+#     directory.
+#
+#     Args:
+#     -----
+#         scaff_infile (str) -- the absolute path for the input file
+#         containing all the scaffold data.
+#
+#     Returns:
+#     -----
+#         None
+#     """
+#     # Assertions
+#     assert isinstance(infile, str), 'TypeError: input file pathname must be \
+#     a string.'
+#     assert os.path.exists(infile), 'Input file does not exist.'
+#     # Functionality
+#     scaff_df = pd.read_excel(infile, index_col = 'Scaffold ID')
+#     types = scaff_df['Scaffold type'].unique()
+#     for type in types:
+#         # Create a new output file for each unique type of scaffold
+#         relative_path = 'example/' + type + '_scaffolds.txt'
+#         absolute_path = os.path.join(os.getcwd(), relative_path)
+#         outfile = smart_open(absolute_path, 'w')
+#         # Reduce scaffold data to only data of the current type
+#         type_df = scaff_df[scaff_df['Scaffold type'] == type]
+#         for index, row in type_df.iterrows():
+#             outfile.write(index + '\t' + row['Sequence'] + '\n')
+#         outfile.close()
+#
+#     return
