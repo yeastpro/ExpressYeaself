@@ -2,12 +2,19 @@
 This script contains functions to organize and split up data based
 on several experimental parameters.
 """
-import expressyeaself.build_promoter as build
-from expressyeaself.utilities import get_seq_count as get_seq_count
-from expressyeaself.utilities import get_time_stamp as get_time_stamp
-from expressyeaself.utilities import smart_open as smart_open
+# import expressyeaself.build_promoter as build
+# from expressyeaself.utilities import get_seq_count as get_seq_count
+# from expressyeaself.utilities import get_time_stamp as get_time_stamp
+# from expressyeaself.utilities import smart_open as smart_open
 import os
 import time as t
+import expressyeaself.context as context
+
+build = context.build_promoter
+organize = context.organize_data
+get_seq_count = context.utilities.get_seq_count
+get_time_stamp = context.utilities.get_time_stamp
+smart_open = context.utilities.smart_open
 
 
 def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
