@@ -31,17 +31,16 @@ install:
     
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$(pwd)
-#  - "flake8 expressyeaself"
 
 script:
   - flake8
-#  - coverage run -m unittest discover
+  - coverage run -m #unittest discover
 
 # calculate and report code coverage
 after_success:
   - coveralls
   - coverage report
 
-# whether or not to eb notified everytime someone pushes
+# Email notifications
 notifications:
     email: true
