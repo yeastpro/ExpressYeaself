@@ -95,6 +95,33 @@ def get_seq_count(infile):
     return count
 
 
+def separate_seq_and_el_data(line):
+    """
+    Takes a string containing a nucleotide sequence and its expression
+    level (el) - tab separated - and returns the sequence as a string
+    and the expression level as a float.
+
+    Args:
+    -----
+        line (str) -- the input line containing the sequence and
+        expression level (tab separated) to be separated.
+
+    Returns:
+    -----
+        seq (str) -- the nucleotide sequence.
+
+        exp_level (float) -- the expression level of the sequence.
+    """
+    # Assertions
+    assert isinstance(line, str), 'Input line must be passed as a string.'
+    # Functionality
+    data = line.rstrip().split('\t')
+    seq = data[0]
+    exp_level = float(data[1])
+
+    return seq, exp_level
+
+
 def check_valid_line(line):
     """
     Takes an line from an input file containing sequence and
