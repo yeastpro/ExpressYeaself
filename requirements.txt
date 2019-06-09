@@ -6,6 +6,7 @@ keras
 numpy
 pandas
 pytest
+pytest-cov
 seaborn
 tensorflow
 tf-nightly
