@@ -35,7 +35,6 @@ def test_insert_seq_into_scaffold():
     oligo = ('TGCATTTTTTTCACATCTATTGGCTACTAATCAAAGGGACTCGGTGGATTTAATTCTGT\
                 TGATTCCGAAGCCTCTTATGTGCTCAAGTTTGGGTAGAGGTTACGGCTGTT')
     complete = test.insert_seq_into_scaffold(oligo, scaff)
-    print(complete)
     assert isinstance(complete, str), 'TypeError: Function not outputting a \
     string.'
     assert len(complete) == len(oligo), 'Function output sequence not the \
