@@ -31,6 +31,18 @@ def test_get_time_stamp():
     """
     Tests the function that produces a unique time stamp.
     """
+    # Test for uniqueness
+    test_stamp_1 = test.get_time_stamp()
+    test_stamp_2 = test.get_time_stamp()
+    assert test_stamp_1 != test_stamp_2
+    # Test for format
+    forbidden_chars = ['.', '-', ' ', ':']
+    idx = test_stamp_1.find('.')
+    for char in forbidden_chars:
+        idx = test_stamp_1.find(char)
+        if idx != -1:
+            raise AssertionError('Function not removing non-digit characters\
+                                 correctly.')
 
     return
 
