@@ -6,7 +6,6 @@ import expressyeaself.tests.context as context
 import os
 
 test = context.organize_data
-TEST_DIR = os.getcwd() + '/test_files/'
 
 
 def test_separate_seq_and_e_data():
@@ -30,7 +29,9 @@ def test_check_valid_line():
     input file, containing a nucleotide sequence tab separated from
     its associated expression level.
     """
-    open(TEST_DIR + 'trial_check.txt', 'w+')
+    filename = 'trial_check.txt'
+    open(filename, 'w+')
+    os.remove(filename)
     return
 
 
