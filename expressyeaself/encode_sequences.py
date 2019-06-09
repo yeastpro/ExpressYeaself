@@ -6,10 +6,7 @@ neural network that will receive the encoded sequence.
 import numpy as np
 import expressyeaself.organize_data as organize
 from expressyeaself.utilities import smart_open as smart_open
-import expressyeaself.context as context
 
-organize = context.organize_data
-smart_open = context.utilities.smart_open
 BASES = ['A', 'T', 'G', 'C']
 MAPPING = {'A': [1, 0, 0, 0, 0],
            'T': [0, 1, 0, 0, 0],
