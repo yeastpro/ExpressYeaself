@@ -9,7 +9,8 @@ python:
 # only test the master branch
 branches:
   only:
-    - master 
+      #- master
+    - coverage 
 
 before_install:
       #    - install miniconda
@@ -34,7 +35,7 @@ before_script:
 
 script:
   - flake8
-  - coverage run -m #unittest discover
+  - coverage run #-m unittest discover
 
 # calculate and report code coverage
 after_success:
