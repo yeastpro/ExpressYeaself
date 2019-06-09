@@ -6,16 +6,14 @@ import expressyeaself.build_promoter as build
 from expressyeaself.utilities import get_seq_count as get_seq_count
 from expressyeaself.utilities import get_time_stamp as get_time_stamp
 from expressyeaself.utilities import smart_open as smart_open
-import gzip
 import os
-import pandas as pd
 import time as t
-import xlrd
+
 
 def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
-                    deflank=True, insert_into_scaffold=True, extra_padding=0,
-                    pad_front=False, report_loss=True, report_times=True,
-                    remove_files=True):
+                     deflank=True, insert_into_scaffold=True,
+                     extra_padding=0, pad_front=False, report_loss=True,
+                     report_times=True, remove_files=True):
     """
     A wrapper function that:
     Takes raw data as retrieved from Carl de Boer's publication
@@ -114,18 +112,18 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
         t_init = t.time()
         t0 = t_init
     if remove_files:
-        created_files = [] # keep track of the intermediate files created.
+        created_files = []  # keep track of the intermediate files created.
     # Create new file of only homogeneous (same length) seqs
     if homogeneous:
         print('Pulling homogeneous sequences from input file...')
         input_seqs = pull_homogeneous_seqs(input_seqs,
-                                            scaffold_type=scaffold_type)
+                                           scaffold_type=scaffold_type)
         processed_data += '_homogeneous'
         if report_loss:
             loss_report['Homogeneous Seqs'] = get_seq_count(input_seqs)
         if report_times:
             t1 = t.time()
-            text = '\tFile created in %s s' %(t1 - t0)
+            text = '\tFile created in %s s' % (t1 - t0)
             print(text)
             report.write('Homogeneous sequences pulled...\n' + text + '\n')
             t0 = t1
@@ -135,13 +133,13 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     if deflank:
         print('Removing flank regions from sequences...')
         input_seqs = build.remove_flanks_from_all_seqs(input_seqs,
-                                    scaffold_type=scaffold_type)
+                                                       scaffold_type)
         processed_data += '_deflanked'
         if report_loss:
             loss_report['Deflanked Seqs'] = get_seq_count(input_seqs)
         if report_times:
             t1 = t.time()
-            text = '\tFile created in %s s' %(t1 - t0)
+            text = '\tFile created in %s s' % (t1 - t0)
             print(text)
             report.write('Sequences deflanked...\n' + text + '\n')
             t0 = t1
@@ -150,17 +148,18 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     processed_data += '_sequences'
     # Insert sequences into appropriate scaffold
     if insert_into_scaffold:
-        print('Inserting sequences into %s scaffold...' %(scaffold_type))
+        print('Inserting sequences into %s scaffold...' % (scaffold_type))
         input_seqs = build.insert_all_seq_into_one_scaffold(input_seqs,
-                                    scaffold_type=scaffold_type)
-        processed_data += '_inserted_into_%s_scaffold' %(scaffold_type)
+                                                            scaffold_type)
+        processed_data += '_inserted_into_%s_scaffold' % (scaffold_type)
         if report_loss:
             loss_report['Scaffold-Inserted Seqs'] = get_seq_count(input_seqs)
         if report_times:
             t1 = t.time()
-            text = '\tFile created in %s s' %(t1 - t0)
+            text = '\tFile created in %s s' % (t1 - t0)
             print(text)
-            report.write('Seqs inserted into '+scaffold_type+' scaffold...\n')
+            report.write('Seqs inserted into ' + scaffold_type +
+                         'scaffold...\n')
             report.write(text + '\n')
             t0 = t1
         if remove_files:
@@ -168,20 +167,20 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     # Pad sequences
     print('Padding sequences...')
     input_seqs = build.pad_sequences(input_seqs, pad_front=pad_front,
-                                    extra_padding=extra_padding)
-    if not homogeneous: # then they will have been padded
+                                     extra_padding=extra_padding)
+    if not homogeneous:  # then they will have been padded
         processed_data += '_padded_at'
         if pad_front:
             processed_data += '_front'
         else:
             processed_data += '_back'
     if extra_padding != 0:
-        processed_data += '_%s_extra' %(extra_padding)
+        processed_data += '_%s_extra' % (extra_padding)
     if report_loss:
         loss_report['Padded Seqs'] = get_seq_count(input_seqs)
     if report_times:
         t1 = t.time()
-        text = '\tFile created in %s s' %(t1 - t0)
+        text = '\tFile created in %s s' % (t1 - t0)
         print(text)
         report.write('Padded sequences...\n')
         report.write(text + '\n')
@@ -192,22 +191,22 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     # Rename the final output file to reflect how data has been cleaned.
     processed_data += '_with_exp_levels.txt'
     # Report end of process and print final output file locations.
-    if input_seqs != raw_data: # i.e. if data has been processed in some way
+    if input_seqs != raw_data:  # i.e. if data has been processed in some way
         os.rename(input_seqs, processed_data)
         # Report end of process and print absolute path of processed data.
         text = ('\nRaw data successfully processed.\nLocation: %s\n'
-            %(processed_data))
+                % (processed_data))
         print(text)
         report.write(text)
-    else: # If no processing was performed.
-        text ='\nNo processing performed.\n'
+    else:  # If no processing was performed.
+        text = '\nNo processing performed.\n'
         text += 'Change processing specifications and try again.'
         print(text)
         report.write(text + '\n')
         text = 'Raw data remains unchanged.'
         print(text)
         report.write(text + '\n')
-        text = 'Location : %s' %(raw_data)
+        text = 'Location : %s' % (raw_data)
         print(text)
         report.write(text + '\n')
     # Write the number of seqs and length of seqs to the start of file
@@ -218,11 +217,12 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
         for category in loss_report.keys():
             curr_count = loss_report[category]
             if category == 'Raw Data':
-                report.write('\t%s : %s\n' %(category, curr_count))
+                report.write('\t%s : %s\n' % (category, curr_count))
                 prev_count = curr_count
             else:
                 report.write('\t%s : %s (%s lines lost since last step)\n'
-                    %(category,curr_count, (prev_count - curr_count)))
+                             % (category, curr_count, (prev_count -
+                                curr_count)))
                 prev_count = curr_count
     # Remove intermediate files
     if remove_files:
@@ -233,7 +233,7 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     # Report total time taken
     if report_times:
         t_final = t.time()
-        text = '\nTotal processing time : %s s' %(t_final - t_init)
+        text = '\nTotal processing time : %s s' % (t_final - t_init)
         print(text)
         report.write(text)
         print('Please find the process report in the same directory as the\
@@ -241,6 +241,7 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     report.close()
 
     return processed_data
+
 
 def separate_seq_and_el_data(line):
     """
@@ -268,6 +269,7 @@ def separate_seq_and_el_data(line):
 
     return seq, exp_level
 
+
 def check_valid_line(line):
     """
     Takes an line from an input file containing sequence and
@@ -289,9 +291,9 @@ def check_valid_line(line):
         is returned. Otherwise, the string 'skip_line' will be
         returned.
     """
-    if isinstance(line, bytes): # decodes line if encoded
+    if isinstance(line, bytes):  # decodes line if encoded
         line = line.decode()
-    if line is None or line == "" or line[0]=="#":
+    if line is None or line == "" or line[0] == "#":
         return 'skip_line'
     try:
         seq, exp_level = separate_seq_and_el_data(line)
@@ -299,6 +301,7 @@ def check_valid_line(line):
         line = 'skip_line'
 
     return line
+
 
 def get_max_min_mode_length_of_seqs(input_seqs):
     """
@@ -343,6 +346,7 @@ def get_max_min_mode_length_of_seqs(input_seqs):
 
     return max_length, min_length, modal_length
 
+
 def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
     """
     Pulls all sequences of the modal length (i.e. 110 bp for pTpA-type
@@ -380,10 +384,10 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
     time_stamp = get_time_stamp()
     if scaffold_type is None:
         relative_path += ('other_scaffolds/' + time_stamp +
-        '_homogeneous_seqs.txt')
+                          '_homogeneous_seqs.txt')
     else:
         relative_path += (scaffold_type + '_data/' + time_stamp + '_' +
-        scaffold_type + '_homogeneous_seqs.txt')
+                          scaffold_type + '_homogeneous_seqs.txt')
         absolute_path = os.path.join(os.getcwd(), relative_path)
     # Open the input and output files.
     infile = smart_open(input_seqs, 'r')
@@ -412,6 +416,7 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
     output_seqs.close()
 
     return absolute_path
+
 
 def check_oligonucleotide_flanks(seq_infile, scaffold_type):
     """
@@ -472,6 +477,7 @@ def check_oligonucleotide_flanks(seq_infile, scaffold_type):
 
     return incorrect_lines
 
+
 def remove_file_list(files):
     """
     Takes a list of path names for files and deletes each of the
@@ -498,6 +504,7 @@ def remove_file_list(files):
             pass
 
     return
+
 
 def write_num_and_len_of_seqs_to_file(input_seqs):
     """
@@ -537,7 +544,7 @@ def write_num_and_len_of_seqs_to_file(input_seqs):
         except line == 'skip_line':
             raise AssertionError('First line is not valid.')
         seq, _ = separate_seq_and_el_data(line)
-        len_seqs = len(seq) # assumes all sequences padded to same length
+        len_seqs = len(seq)  # assumes all sequences padded to same length
     with smart_open(input_seqs, "r+") as f:
         contents = f.read()
     with smart_open(input_seqs, "w+") as f:
@@ -548,6 +555,7 @@ def write_num_and_len_of_seqs_to_file(input_seqs):
         f.write(line_to_append + contents)
 
     return
+
 
 def get_num_and_len_of_seqs_from_file(input_seqs):
     """
@@ -615,6 +623,7 @@ def get_num_and_len_of_seqs_from_file(input_seqs):
 
     return num_seqs, len_seqs
 
+
 def create_sample_data(input_seqs, sample_size):
     """
     Takes a sample of size 'sample_size' from an input file
@@ -659,12 +668,13 @@ def create_sample_data(input_seqs, sample_size):
             while count < sample_size + 1:
                 count += 1
                 line = inf.readline()
-                if count < 2: # skip the first 2 lines
+                if count < 2:  # skip the first 2 lines
                     continue
                 outf.write(line)
     write_num_and_len_of_seqs_to_file(output_seqs)
 
     return output_seqs
+
 
 # def split_scaffolds_by_type(infile):
 #     """

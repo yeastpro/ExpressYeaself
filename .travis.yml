@@ -9,7 +9,7 @@ python:
 # only test the master branch
 branches:
   only:
-    - master
+    - travisci
 
 before_install:
       #    - install miniconda

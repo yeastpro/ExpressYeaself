@@ -5,22 +5,21 @@ neural network that will receive the encoded sequence.
 """
 import numpy as np
 import expressyeaself.organize_data as organize
-import os
 from expressyeaself.utilities import smart_open as smart_open
-from expressyeaself.utilities import get_time_stamp as get_time_stamp
 
-BASES = ['A','T','G','C']
-MAPPING =  {'A' : [1,0,0,0,0],
-            'T' : [0,1,0,0,0],
-            'G' : [0,0,1,0,0],
-            'C' : [0,0,0,1,0],
-            'N' : [0,0,0,0,1],
-            'P' : [0,0,0,0,0]}
+BASES = ['A', 'T', 'G', 'C']
+MAPPING = {'A': [1, 0, 0, 0, 0],
+           'T': [0, 1, 0, 0, 0],
+           'G': [0, 0, 1, 0, 0],
+           'C': [0, 0, 0, 1, 0],
+           'N': [0, 0, 0, 0, 1],
+           'P': [0, 0, 0, 0, 0]}
 METHODS = ['One-Hot']
 MODELS = ['1DCNN', '1DLOCCON', 'LSTM']
 
+
 def encode_sequences_with_method(input_seqs, method='One-Hot',
-                                scale_els=True, model_type='1DCNN'):
+                                 scale_els=True, model_type='1DCNN'):
     """
     A wrapper function that encodes all of the sequences in an
     input file according to the specified method, and returns
@@ -83,36 +82,36 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     assert isinstance(method, str), 'TypeError: Specified method must be a \
     a string.'
     assert method in METHODS, 'Must specify one the method of encoding the \
-    sequence. Choose one of: %s' %(METHODS)
+    sequence. Choose one of: %s' % (METHODS)
     assert isinstance(scale_els, bool), 'scale_els argument must be passed\
     as a bool.'
     assert isinstance(model_type, str), 'model_type argument must be passed\
     as a string.'
     assert model_type in MODELS, 'Must specify model_type as one of the\
-    following: %s' %(MODELS)
+    following: %s' % (MODELS)
     # Functionality
     # Open input file
     infile = smart_open(input_seqs, 'r')
     # Initialize output lists, preallocating dimensions for speed.
-    num_seqs,len_seqs = organize.get_num_and_len_of_seqs_from_file(input_seqs)
-    encoded_seqs = np.zeros((int(num_seqs),int(len_seqs),5)).astype(int)
+    num_seqs, len_seq = organize.get_num_and_len_of_seqs_from_file(input_seqs)
+    encoded_seqs = np.zeros((int(num_seqs), int(len_seq), 5)).astype(int)
     exp_levels = np.zeros(int(num_seqs))
     # Encode sequences
     line_number = -3
     for line in infile:
         line_number += 1
         if line_number < 0:
-            continue # skip first 2 lines of the file
+            continue  # skip first 2 lines of the file
         line = organize.check_valid_line(line)
         if line == 'skip_line':
-            continue # skip line if not a valid line
+            continue  # skip line if not a valid line
         seq, exp_level = organize.separate_seq_and_el_data(line)
         # Encode with One-Hot method
         if method == 'One-Hot':
             try:
                 encoded_seq = one_hot_encode_sequence(seq)
             except Exception:
-                raise AssertionError('Error on line %s' %(line_number))
+                raise AssertionError('Error on line %s' % (line_number))
         # Encode with another method, i.e. embedding
         else:
             # Another encoding method will go here
@@ -126,18 +125,17 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     # Reshape array if needed as input to LSTM model
     if model_type == 'LSTM':
         encoded_seqs = encoded_seqs.reshape(num_seqs, -1)
-        encoded_seqs = encoded_seqs.reshape(num_seqs, 1, (len_seqs * 5))
+        encoded_seqs = encoded_seqs.reshape(num_seqs, 1, (len_seq * 5))
     # Scale expression level values to between -1 and 1
     if scale_els:
-        abs_max_el = abs(max(exp_levels, key=abs)) # the absolute max value
-        index = -1
+        abs_max_el = abs(max(exp_levels, key=abs))  # the absolute max value
         # numpy allows easy division of all elements at once
         exp_levels = exp_levels / abs_max_el
-    # If no scaling required
-    else:
+    else:  # If no scaling required
         abs_max_el = None
 
     return encoded_seqs, exp_levels, abs_max_el
+
 
 def one_hot_encode_sequence(promoter_seq):
     """
@@ -157,15 +155,15 @@ def one_hot_encode_sequence(promoter_seq):
     assert isinstance(promoter_seq, str), 'TypeError: Input nucleotide \
     sequence must be a string.'
     invalid_indices = []
-    index = -1 # Iterator for character index in promoter_seq string
+    index = -1  # Iterator for character index in promoter_seq string
     for nuc in promoter_seq:
         index += 1
         nuc = nuc.upper()
         if nuc not in MAPPING.keys():
-            invalid_indices.append(index) # Appends list of incorrect indices
-    if len(invalid_indices) is not 0:
+            invalid_indices.append(index)  # Appends list of incorrect indices
+    if len(invalid_indices) != 0:
         raise Exception('Input nucleotide sequence contains a non ATGC or \
-        "N" or "P" at string indices %s' %(invalid_indices))
+        "N" or "P" at string indices %s' % (invalid_indices))
     # Functionality
     one_hot_seq = []
     for nuc in promoter_seq:
@@ -173,6 +171,7 @@ def one_hot_encode_sequence(promoter_seq):
         one_hot_seq.append(MAPPING[nuc])
 
     return one_hot_seq
+
 
 def resize_array(input_array, resize_to=None, edit_front=False):
     """
@@ -204,23 +203,24 @@ def resize_array(input_array, resize_to=None, edit_front=False):
     assert isinstance(input_array, list), 'Input array must be a list.'
     assert isinstance(resize_to, (int, type(None))), 'Length to resize the \
     array to must be an integer or None.'
-    assert isinstance(edit_front, bool), 'TypeError: edit_front must be a bool.'
+    assert isinstance(edit_front, bool), 'TypeError: edit_front must be\
+    a bool.'
     previous_len = len(input_array[0])
-    for i in range(1, len(input_array)): # check vectors in array same length
+    for i in range(1, len(input_array)):  # check vectors in array same length
         current_len = len(input_array[i])
         assert current_len == previous_len, 'Not all vectors in input array \
         are of the same length.'
         previous_len = current_len
     # Functionality
     len_diff = len(input_array) - resize_to
-    if len_diff == 0: # doesn't need resizing
+    if len_diff == 0:  # doesn't need resizing
         return input_array
-    elif len_diff > 0: # Sequence needs trimming
+    elif len_diff > 0:  # Sequence needs trimming
         if edit_front:
             return input_array[-resize_to:]
         else:
             return input_array[:resize_to]
-    elif len_diff < 0: # Sequence needs filling
+    elif len_diff < 0:  # Sequence needs filling
         # Ensuring null vector to be added matches dimensions of input array
         null_vect = [0] * len(input_array[0])
         if edit_front:
