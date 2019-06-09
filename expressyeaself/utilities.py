@@ -4,7 +4,6 @@ of the project.
 """
 import datetime as dt
 import gzip
-import expressyeaself.organize_data as organize
 import os
 
 
@@ -87,10 +86,43 @@ def get_seq_count(infile):
     count = 0
     with smart_open(infile, 'r') as file:
         for line in file:
-            line = organize.check_valid_line(line)
+            line = check_valid_line(line)
             if line == 'skip_line':
                 continue
             else:
                 count += 1
 
     return count
+
+
+def check_valid_line(line):
+    """
+    Takes an line from an input file containing sequence and
+    expression level data and returns instructions on what to
+    do based on its classification. For example, if the line is
+    a comment or is empty, the function will return 'skip_line'.
+    If the line is encoded into bytes, it will return the
+    decoded line. Not satisfying these conditionals will mean the
+    line is valid, and so will be returned as it was inputted.
+
+    Args:
+    -----
+        line (str or bytes) -- a line from an input file to be
+        checked for validity
+
+    Returns:
+    -----
+        line (str) - if the input line was valid, the decoded line
+        is returned. Otherwise, the string 'skip_line' will be
+        returned.
+    """
+    if isinstance(line, bytes):  # decodes line if encoded
+        line = line.decode()
+    if line is None or line == "" or line[0] == "#":
+        return 'skip_line'
+    try:
+        seq, exp_level = separate_seq_and_el_data(line)
+    except IndexError:
+        line = 'skip_line'
+
+    return line
