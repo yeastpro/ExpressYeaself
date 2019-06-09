@@ -5,6 +5,7 @@ neural network that will receive the encoded sequence.
 """
 import numpy as np
 import expressyeaself.organize_data as organize
+from expressyeaself.utilities import check_valid_line as check_valid_line
 from expressyeaself.utilities import smart_open as smart_open
 
 BASES = ['A', 'T', 'G', 'C']
@@ -102,7 +103,7 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         line_number += 1
         if line_number < 0:
             continue  # skip first 2 lines of the file
-        line = organize.check_valid_line(line)
+        line = check_valid_line(line)
         if line == 'skip_line':
             continue  # skip line if not a valid line
         seq, exp_level = organize.separate_seq_and_el_data(line)
