@@ -14,8 +14,7 @@ python:
 # Only test the master branch
 branches:
   only:
-      #- master
-    - coverage 
+  - master
 
 before_install:
       #    - install miniconda
@@ -25,16 +24,9 @@ before_install:
       #    - export PATH="$PWD/miniconda/bin/:$PATH"
       #    - yes|conda update conda > /dev/null
 
-# install packages necessary for CI test, set up env
+# Install packages as specified in requirements.txt
 install:
-  - pip install coverage
-  - pip install coveralls
-  - pip install pytest
-  - pip install flake8
   - pip install -r requirements.txt
-    #- pip install -e
-    #  - yes|conda env create -f environment.yml
-    #  - source activate yeast 
     
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$(pwd)
