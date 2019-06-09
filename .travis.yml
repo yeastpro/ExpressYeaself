@@ -5,7 +5,6 @@ sudo: no
 # what versions of python to evaluate
 python:
   - "3.6"
-  - "3.7"
 
 # only test the master branch
 branches:
