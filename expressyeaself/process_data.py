@@ -2,6 +2,11 @@
 This script contains a wrapper function that processes raw data.
 """
 import expressyeaself.build_promoter as build
+import expressyeaself.organize_data as organize
+from expressyeaself.utilities import get_seq_count as get_seq_count
+from expressyeaself.utilities import get_time_stamp as get_time_stamp
+from expressyeaself.utilities import smart_open as smart_open
+import os
 import time as t
 
 
@@ -111,8 +116,7 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     # Create new file of only homogeneous (same length) seqs
     if homogeneous:
         print('Pulling homogeneous sequences from input file...')
-        input_seqs = pull_homogeneous_seqs(input_seqs,
-                                           scaffold_type=scaffold_type)
+        input_seqs = organize.pull_homogeneous_seqs(input_seqs, scaffold_type)
         processed_data += '_homogeneous'
         if report_loss:
             loss_report['Homogeneous Seqs'] = get_seq_count(input_seqs)
@@ -205,7 +209,7 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
         print(text)
         report.write(text + '\n')
     # Write the number of seqs and length of seqs to the start of file
-    write_num_and_len_of_seqs_to_file(processed_data)
+    organize.write_num_and_len_of_seqs_to_file(processed_data)
     # Report loss
     if report_loss:
         report.write('\nLine counts at each step of the process:\n')
@@ -222,7 +226,7 @@ def process_raw_data(input_seqs, scaffold_type=None, homogeneous=False,
     # Remove intermediate files
     if remove_files:
         print('\nRemoving intermediate files...')
-        remove_file_list(created_files)
+        organize.remove_file_list(created_files)
         print('Files successfully removed.')
     print('Process complete.')
     # Report total time taken
