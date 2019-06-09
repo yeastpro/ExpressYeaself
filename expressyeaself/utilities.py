@@ -4,11 +4,8 @@ of the project.
 """
 import datetime as dt
 import gzip
-# import expressyeaself.organize_data as organize
+import expressyeaself.organize_data as organize
 import os
-import expressyeaself.context as context
-
-organize = context.organize_data
 
 
 def smart_open(filename, mode='r'):

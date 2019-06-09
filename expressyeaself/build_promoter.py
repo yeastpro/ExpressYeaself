@@ -4,17 +4,12 @@ by joining random oligonucleotide and scaffold sequences together.
 For example: ATGCATGC inserted into AAAANNNNNNNNTTTT would give
 AAAAATGCATGCTTTT.
 """
-# import expressyeaself.organize_data as organize
-# from expressyeaself.utilities import get_time_stamp as get_time_stamp
-# from expressyeaself.utilities import smart_open as smart_open
+import expressyeaself.organize_data as organize
+from expressyeaself.utilities import get_time_stamp as get_time_stamp
+from expressyeaself.utilities import smart_open as smart_open
 import os
 # import pandas as pd
 # import xlrd
-import expressyeaself.context as context
-
-organize = context.organize_data
-get_time_stamp = context.utilities.get_time_stamp
-smart_open = context.utilities.smart_open
 
 
 def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
