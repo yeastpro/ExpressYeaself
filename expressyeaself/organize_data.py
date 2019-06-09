@@ -2,38 +2,13 @@
 This script contains functions to organize and split up data based
 on several experimental parameters.
 """
-from expressyeaself.utilities import check_valid_line as check_valid_line
-from expressyeaself.utilities import get_seq_count as get_seq_count
-from expressyeaself.utilities import get_time_stamp as get_time_stamp
-from expressyeaself.utilities import smart_open as smart_open
+import expressyeaself.utilities as utilities  # noqa: F401
+from utilities import check_valid_line as check_valid_line
+from utilities import get_seq_count as get_seq_count
+from utilities import get_time_stamp as get_time_stamp
+from utilities import separate_seq_and_el_data as separate_seq_and_el_data
+from utilities import smart_open as smart_open
 import os
-
-
-def separate_seq_and_el_data(line):
-    """
-    Takes a string containing a nucleotide sequence and its expression
-    level (el) - tab separated - and returns the sequence as a string
-    and the expression level as a float.
-
-    Args:
-    -----
-        line (str) -- the input line containing the sequence and
-        expression level (tab separated) to be separated.
-
-    Returns:
-    -----
-        seq (str) -- the nucleotide sequence.
-
-        exp_level (float) -- the expression level of the sequence.
-    """
-    # Assertions
-    assert isinstance(line, str), 'Input line must be passed as a string.'
-    # Functionality
-    data = line.rstrip().split('\t')
-    seq = data[0]
-    exp_level = float(data[1])
-
-    return seq, exp_level
 
 
 def get_max_min_mode_length_of_seqs(input_seqs):
