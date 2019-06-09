@@ -41,7 +41,8 @@ before_script:
 script:
   - flake8
     #  - coverage run #-m unittest discover
-  - py.test #-s --pyargs expressyeaself --cov-report term-missing --cov=expressyeaself --cov-config .coveragerc
+    #- py.test #-s --pyargs expressyeaself --cov-report term-missing --cov=expressyeaself --cov-config .coveragerc
+  - pytest
 
 # calculate and report code coverage
 after_success:
