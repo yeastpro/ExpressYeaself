@@ -2,14 +2,20 @@
 language: python
 sudo: no
 
-# what versions of python to evaluate
+# Setting some global variables
+env:
+    global:
+    - KERAS_BACKEND = tensorflow
+
+# Python versions to run
 python:
   - "3.6"
 
-# only test the master branch
+# Only test the master branch
 branches:
   only:
-    - master 
+      #- master
+    - coverage 
 
 before_install:
       #    - install miniconda
@@ -26,22 +32,25 @@ install:
   - pip install pytest
   - pip install flake8
   - pip install -r requirements.txt
+    #- pip install -e
     #  - yes|conda env create -f environment.yml
     #  - source activate yeast 
     
 before_script:
   - export PYTHONPATH=$PYTHONPATH:$(pwd)
-#  - "flake8 expressyeaself"
 
 script:
   - flake8
-#  - coverage run -m unittest discover
+    #  - coverage run #-m unittest discover
+    #- py.test #-s --pyargs expressyeaself --cov-report term-missing --cov=expressyeaself --cov-config .coveragerc
+    #- py.test
+  - python -m pytest
 
 # calculate and report code coverage
 after_success:
   - coveralls
   - coverage report
 
-# whether or not to eb notified everytime someone pushes
+# Email notifications
 notifications:
     email: true

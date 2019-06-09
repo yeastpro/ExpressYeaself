@@ -4,7 +4,6 @@ of the project.
 """
 import datetime as dt
 import gzip
-import expressyeaself.organize_data as organize
 import os
 
 
@@ -87,10 +86,70 @@ def get_seq_count(infile):
     count = 0
     with smart_open(infile, 'r') as file:
         for line in file:
-            line = organize.check_valid_line(line)
+            line = check_valid_line(line)
             if line == 'skip_line':
                 continue
             else:
                 count += 1
 
     return count
+
+
+def separate_seq_and_el_data(line):
+    """
+    Takes a string containing a nucleotide sequence and its expression
+    level (el) - tab separated - and returns the sequence as a string
+    and the expression level as a float.
+
+    Args:
+    -----
+        line (str) -- the input line containing the sequence and
+        expression level (tab separated) to be separated.
+
+    Returns:
+    -----
+        seq (str) -- the nucleotide sequence.
+
+        exp_level (float) -- the expression level of the sequence.
+    """
+    # Assertions
+    assert isinstance(line, str), 'Input line must be passed as a string.'
+    # Functionality
+    data = line.rstrip().split('\t')
+    seq = data[0]
+    exp_level = float(data[1])
+
+    return seq, exp_level
+
+
+def check_valid_line(line):
+    """
+    Takes an line from an input file containing sequence and
+    expression level data and returns instructions on what to
+    do based on its classification. For example, if the line is
+    a comment or is empty, the function will return 'skip_line'.
+    If the line is encoded into bytes, it will return the
+    decoded line. Not satisfying these conditionals will mean the
+    line is valid, and so will be returned as it was inputted.
+
+    Args:
+    -----
+        line (str or bytes) -- a line from an input file to be
+        checked for validity
+
+    Returns:
+    -----
+        line (str) - if the input line was valid, the decoded line
+        is returned. Otherwise, the string 'skip_line' will be
+        returned.
+    """
+    if isinstance(line, bytes):  # decodes line if encoded
+        line = line.decode()
+    if line is None or line == "" or line[0] == "#":
+        return 'skip_line'
+    try:
+        seq, exp_level = separate_seq_and_el_data(line)
+    except IndexError:
+        line = 'skip_line'
+
+    return line

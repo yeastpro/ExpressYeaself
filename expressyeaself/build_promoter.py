@@ -5,8 +5,11 @@ For example: ATGCATGC inserted into AAAANNNNNNNNTTTT would give
 AAAAATGCATGCTTTT.
 """
 import expressyeaself.organize_data as organize
-from expressyeaself.utilities import get_time_stamp as get_time_stamp
-from expressyeaself.utilities import smart_open as smart_open
+import expressyeaself.utilities as utilities  # noqa: F401
+from utilities import check_valid_line as check_valid_line
+from utilities import get_time_stamp as get_time_stamp
+from utilities import separate_seq_and_el_data as separate_seq_and_el_data
+from utilities import smart_open as smart_open
 import os
 # import pandas as pd
 # import xlrd
@@ -111,10 +114,10 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
     outfile = smart_open(absolute_path, 'w')
     # Remove flanks and write data to output file.
     for line in infile:
-        line = organize.check_valid_line(line)
+        line = check_valid_line(line)
         if line == 'skip_line':
             continue
-        seq, exp_level = organize.separate_seq_and_el_data(line)
+        seq, exp_level = separate_seq_and_el_data(line)
         deflanked_seq = remove_flanks_from_seq(seq, scaffold_type)
         outfile.write(deflanked_seq + '\t' + str(exp_level) + '\n')
     # Close the input and output files.
@@ -207,10 +210,10 @@ def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
     scaffold = scaff_file.readline().replace('\n', '')
     # Insert sequences into scaffold and write data to output file
     for line in infile:
-        line = organize.check_valid_line(line)
+        line = check_valid_line(line)
         if line == 'skip_line':
             continue
-        seq, exp_level = organize.separate_seq_and_el_data(line)
+        seq, exp_level = separate_seq_and_el_data(line)
         complete_seq = insert_seq_into_scaffold(seq, scaffold)
         outfile.write(complete_seq + '\t' + str(exp_level) + '\n')
     # Close the input, output, and scaffold files.
@@ -266,10 +269,10 @@ def pad_sequences(input_seqs, pad_front=False, extra_padding=0):
     pad_length = max_length + extra_padding
     with smart_open(input_seqs) as f:
         for line in f:
-            line = organize.check_valid_line(line)
+            line = check_valid_line(line)
             if line == 'skip_line':
                 continue
-            seq, exp_level = organize.separate_seq_and_el_data(line)
+            seq, exp_level = separate_seq_and_el_data(line)
             difference = pad_length - len(seq)
             if difference == 0:
                 padded_seq = seq
