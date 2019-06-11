@@ -224,6 +224,7 @@ def test_get_num_and_len_of_seqs_from_file():
 
     return
 
+
 def test_create_sample_data():
     """
     Tests the function that creates a file containing a given
@@ -255,7 +256,7 @@ def test_create_sample_data():
     trial_path = 'trial_file.txt'
     file = open(trial_path, 'w')
     try:
-        sample = test.create_sample_data(trial_path, 10)
+        sample = test.create_sample_data(file, 10)
     except AssertionError:
         pass
     os.remove(trial_path)

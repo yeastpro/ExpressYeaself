@@ -51,7 +51,7 @@ def get_time_stamp():
     than digits 0~9.
     For instance:
     '2019-05-17 17:04:19.923192' ---> '20190517170419923192'
-    
+
     Args:
     -----
         None

@@ -209,10 +209,11 @@ def one_hot_encode_sequence(promoter_seq):
 #     assert isinstance(edit_front, bool), 'TypeError: edit_front must be\
 #     a bool.'
 #     previous_len = len(input_array[0])
-#     for i in range(1, len(input_array)):  # check vectors in array same length
+#     for i in range(1, len(input_array)):  # check vectors in array same
+#       length
 #         current_len = len(input_array[i])
-#         assert current_len == previous_len, 'Not all vectors in input array \
-#         are of the same length.'
+#         assert current_len == previous_len, 'Not all vectors in input\
+#                                              array are of the same length.'
 #         previous_len = current_len
 #     # Functionality
 #     len_diff = len(input_array) - resize_to
