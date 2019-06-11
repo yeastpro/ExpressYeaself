@@ -25,7 +25,7 @@ example/pTpA_data/2019*
 example/pTpA_data/average*
 example/processed_data/2019*
 example/processed_data/1000000*
-example/processed_data/10000_*
+example/processed_data/100000_*
 
 # Ignore files created by unit tests
 expressyeaself/tests/trial*
