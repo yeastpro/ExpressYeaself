@@ -223,8 +223,8 @@ def write_num_and_len_of_seqs_to_file(input_seqs):
     2 lines of the input file will be in the following format
     after writing the info to the file:
     "
-    number_of_seqs_in_file\t<###>
-    length_of_each_sequence\t<$$$>
+    number_of_seqs_in_file\t<###>\n
+    length_of_each_sequence\t<$$$>\n
     "
     where '<###>' is the number of sequences in the file, and
     '<$$$>'is the length to which every sequence in the file is

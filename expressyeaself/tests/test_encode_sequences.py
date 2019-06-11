@@ -12,7 +12,7 @@ def test_encode_sequences_with_method():
     Tests the wrapper function that encodes all promoter sequences
     in an input file by a specified method.
     """
-    # test_file =
+    
 
     return
 

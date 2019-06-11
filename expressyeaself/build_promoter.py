@@ -11,8 +11,6 @@ from expressyeaself.utilities import (separate_seq_and_el_data as
                                       separate_seq_and_el_data)
 from expressyeaself.utilities import smart_open as smart_open
 import os
-# import pandas as pd
-# import xlrd
 
 
 def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):

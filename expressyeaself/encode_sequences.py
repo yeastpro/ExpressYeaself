@@ -142,12 +142,12 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
 
 def one_hot_encode_sequence(promoter_seq):
     """
-    Encodes a string nucleotide sequence using the 'One-Hot' encoding
-    method into a 2D array.
+    Encodes a string nucleotide sequence using the 'One-Hot'
+    encoding method into a 2D array.
 
     Args:
     -----
-        promoter_seq (str)    -- the promoter sequence to be encoded.
+        promoter_seq (str) -- the promoter sequence to be encoded.
 
     Returns:
     -----
