@@ -5,11 +5,11 @@ For example: ATGCATGC inserted into AAAANNNNNNNNTTTT would give
 AAAAATGCATGCTTTT.
 """
 import expressyeaself.organize_data as organize
-import expressyeaself.utilities as utilities  # noqa: F401
-from utilities import check_valid_line as check_valid_line
-from utilities import get_time_stamp as get_time_stamp
-from utilities import separate_seq_and_el_data as separate_seq_and_el_data
-from utilities import smart_open as smart_open
+from expressyeaself.utilities import check_valid_line as check_valid_line
+from expressyeaself.utilities import get_time_stamp as get_time_stamp
+from expressyeaself.utilities import (separate_seq_and_el_data as
+                                      separate_seq_and_el_data)
+from expressyeaself.utilities import smart_open as smart_open
 import os
 # import pandas as pd
 # import xlrd
@@ -21,7 +21,7 @@ def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
     and returns the variable region.
     The input sequences measured in the pTpA scaffold will be of
     the form:
-        TGCATTTTTTTCACATC-(variable region)-GTTACGGCTGTT
+        TGCATTTTTTTCACATC-(variable region)-GGTTACGGCTGTT
     Whereas the input sequences measured in the Abf1TATA scaffold
     will be of the form:
         TCACGCAGTATAGTTC-(variable region)-GGTTTATTGTTTATAAAAA
@@ -70,8 +70,9 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
     Removes all of the flanking sequences from an input file of
     sequences and their expression levels (tab separated).
     Example input file:
-    GSE104878_20160609_average_promoter_ELs_per_seq_pTpA_ALL.shuffled.txt.gz
-    from https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE104878
+    GSE104878_20160609_average_promoter_ELs_per_seq_pTpA_ALL.
+    shuffled.txt.gz from
+    https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE104878
 
     Args:
     -----
@@ -102,7 +103,7 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
     incorrect = organize.check_oligonucleotide_flanks(input_seqs,
                                                       scaffold_type)
     assert len(incorrect) == 0, 'Not all sequences in input file have same \
-    flanking sequences.'
+    flanking sequences. Error on line %s' % str(incorrect)
     # Functionality
     # Defining the pathname for the output file.
     time_stamp = get_time_stamp()  # Get unique time stamp for file naming
@@ -274,16 +275,14 @@ def pad_sequences(input_seqs, pad_front=False, extra_padding=0):
                 continue
             seq, exp_level = separate_seq_and_el_data(line)
             difference = pad_length - len(seq)
-            if difference == 0:
+            if difference == 0:  # No need for padding
                 padded_seq = seq
-            elif difference > 0:
+            else:  # Need to pad
                 padding_seq = 'P' * difference
                 if pad_front:
                     padded_seq = padding_seq + seq
                 else:  # pad the end of the sequence
                     padded_seq = seq + padding_seq
-            else:
-                raise Exception('Sequence length longer than padding length.')
             outfile.write(padded_seq + '\t' + str(exp_level) + '\n')
     # Close the output file
     outfile.close()

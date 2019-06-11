@@ -117,7 +117,11 @@ def separate_seq_and_el_data(line):
     # Functionality
     data = line.rstrip().split('\t')
     seq = data[0]
-    exp_level = float(data[1])
+    try:
+        exp_level = float(data[1])
+    except IndexError:
+        raise IndexError('Input line must have the sequence and expression\
+                         level tab separated.')
 
     return seq, exp_level
 

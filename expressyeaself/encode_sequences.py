@@ -3,12 +3,12 @@ This script contains the functions to encode promoter nucleotide
 sequences by different methods, depending on the requirement of the
 neural network that will receive the encoded sequence.
 """
-import numpy as np
 import expressyeaself.organize_data as organize
-import expressyeaself.utilities as utilities  # noqa: F401
-from utilities import check_valid_line as check_valid_line
-from utilities import separate_seq_and_el_data as separate_seq_and_el_data
+from expressyeaself.utilities import check_valid_line as check_valid_line
+from expressyeaself.utilities import (separate_seq_and_el_data as
+                                      separate_seq_and_el_data)
 from expressyeaself.utilities import smart_open as smart_open
+import numpy as np
 
 BASES = ['A', 'T', 'G', 'C']
 MAPPING = {'A': [1, 0, 0, 0, 0],
@@ -176,63 +176,63 @@ def one_hot_encode_sequence(promoter_seq):
     return one_hot_seq
 
 
-def resize_array(input_array, resize_to=None, edit_front=False):
-    """
-    Takes an M x N 2D array (where M is the length to edit) and
-    resizes it to the specified resize_to length, adding (if too
-    short) null vectors ([0,0,0,0,...] of length N) or removing
-    base vectors (if too long) from either the front or end of
-    the sequence so that the output encoded array is of dimensions
-    (resize_to) x N.
-
-    Args:
-    -----
-        input_array (list) -- the one-hot encoded binary 2D array
-        to resize.
-
-        resize_to (int) -- the length to resize the array to.
-        Default: None (returns the input array with no resizing).
-
-        edit_front (bool) -- whether to add/remove binary base
-        vectors from the front or back of the array. Default:
-        False (so removes them from the back).
-
-    Returns:
-    -----
-        input_array (list) -- the resized array of dimensions
-        (resize_to)x4.
-    """
-    # Assertions
-    assert isinstance(input_array, list), 'Input array must be a list.'
-    assert isinstance(resize_to, (int, type(None))), 'Length to resize the \
-    array to must be an integer or None.'
-    assert isinstance(edit_front, bool), 'TypeError: edit_front must be\
-    a bool.'
-    previous_len = len(input_array[0])
-    for i in range(1, len(input_array)):  # check vectors in array same length
-        current_len = len(input_array[i])
-        assert current_len == previous_len, 'Not all vectors in input array \
-        are of the same length.'
-        previous_len = current_len
-    # Functionality
-    len_diff = len(input_array) - resize_to
-    if len_diff == 0:  # doesn't need resizing
-        return input_array
-    elif len_diff > 0:  # Sequence needs trimming
-        if edit_front:
-            return input_array[-resize_to:]
-        else:
-            return input_array[:resize_to]
-    elif len_diff < 0:  # Sequence needs filling
-        # Ensuring null vector to be added matches dimensions of input array
-        null_vect = [0] * len(input_array[0])
-        if edit_front:
-            for i in range(0, len_diff):
-                input_array.insert(0, null_vect)
-            return input_array
-        else:
-            for i in range(0, len_diff):
-                input_array.append(null_vect)
-            return input_array
-
-    return
+# def resize_array(input_array, resize_to=None, edit_front=False):
+#     """
+#     Takes an M x N 2D array (where M is the length to edit) and
+#     resizes it to the specified resize_to length, adding (if too
+#     short) null vectors ([0,0,0,0,...] of length N) or removing
+#     base vectors (if too long) from either the front or end of
+#     the sequence so that the output encoded array is of dimensions
+#     (resize_to) x N.
+#
+#     Args:
+#     -----
+#         input_array (list) -- the one-hot encoded binary 2D array
+#         to resize.
+#
+#         resize_to (int) -- the length to resize the array to.
+#         Default: None (returns the input array with no resizing).
+#
+#         edit_front (bool) -- whether to add/remove binary base
+#         vectors from the front or back of the array. Default:
+#         False (so removes them from the back).
+#
+#     Returns:
+#     -----
+#         input_array (list) -- the resized array of dimensions
+#         (resize_to)x4.
+#     """
+#     # Assertions
+#     assert isinstance(input_array, list), 'Input array must be a list.'
+#     assert isinstance(resize_to, (int, type(None))), 'Length to resize the \
+#     array to must be an integer or None.'
+#     assert isinstance(edit_front, bool), 'TypeError: edit_front must be\
+#     a bool.'
+#     previous_len = len(input_array[0])
+#     for i in range(1, len(input_array)):  # check vectors in array same length
+#         current_len = len(input_array[i])
+#         assert current_len == previous_len, 'Not all vectors in input array \
+#         are of the same length.'
+#         previous_len = current_len
+#     # Functionality
+#     len_diff = len(input_array) - resize_to
+#     if len_diff == 0:  # doesn't need resizing
+#         return input_array
+#     elif len_diff > 0:  # Sequence needs trimming
+#         if edit_front:
+#             return input_array[-resize_to:]
+#         else:
+#             return input_array[:resize_to]
+#     elif len_diff < 0:  # Sequence needs filling
+#         # Ensuring null vector to be added matches dimensions of input array
+#         null_vect = [0] * len(input_array[0])
+#         if edit_front:
+#             for i in range(0, len_diff):
+#                 input_array.insert(0, null_vect)
+#             return input_array
+#         else:
+#             for i in range(0, len_diff):
+#                 input_array.append(null_vect)
+#             return input_array
+#
+#     return

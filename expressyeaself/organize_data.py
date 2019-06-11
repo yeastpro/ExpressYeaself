@@ -2,12 +2,13 @@
 This script contains functions to organize and split up data based
 on several experimental parameters.
 """
-import expressyeaself.utilities as utilities  # noqa: F401
-from utilities import check_valid_line as check_valid_line
-from utilities import get_seq_count as get_seq_count
-from utilities import get_time_stamp as get_time_stamp
-from utilities import separate_seq_and_el_data as separate_seq_and_el_data
-from utilities import smart_open as smart_open
+# import expressyeaself.utilities. as utilities  # noqa: F401
+from expressyeaself.utilities import check_valid_line as check_valid_line
+from expressyeaself.utilities import get_seq_count as get_seq_count
+from expressyeaself.utilities import get_time_stamp as get_time_stamp
+from expressyeaself.utilities import (separate_seq_and_el_data as
+                                      separate_seq_and_el_data)
+from expressyeaself.utilities import smart_open as smart_open
 import os
 
 
@@ -81,11 +82,12 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
     # Assertions
     assert isinstance(input_seqs, str), 'Input file pathname must be a string.'
     assert os.path.isfile(input_seqs), 'Input file does not exist!'
-    assert isinstance(scaffold_type, str), 'Scaffold type must be passed as a \
-    string.'
-    assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Scaffold \
-    type must be specified as either pTpA or Abf1TATA, or else unspecified \
-    (takes value of None).'
+    assert isinstance(scaffold_type, (str, type(None))), 'Scaffold type must\
+    be passed as a string.'
+    if isinstance(scaffold_type, str):
+        assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Scaff\
+        type must be specified as either pTpA or Abf1TATA, or else\
+        unspecified (in which case it takes value of None).'
     # Functionality
     # Defining the path name of the output file.
     relative_path = 'example/'
@@ -96,7 +98,7 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
     else:
         relative_path += (scaffold_type + '_data/' + time_stamp + '_' +
                           scaffold_type + '_homogeneous_seqs.txt')
-        absolute_path = os.path.join(os.getcwd(), relative_path)
+    absolute_path = os.path.join(os.getcwd(), relative_path)
     # Open the input and output files.
     infile = smart_open(input_seqs, 'r')
     output_seqs = smart_open(absolute_path, 'w')
@@ -108,9 +110,7 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
     else:
         _, _, modal_length = get_max_min_mode_length_of_seqs(input_seqs)
     # Find seqs in input file w/ modal length and write them to output file
-    # count = 0 ###################
     for line in infile:
-        # count += 1 #####################
         line = check_valid_line(line)
         if line == 'skip_line':
             continue
@@ -158,7 +158,7 @@ def check_oligonucleotide_flanks(seq_infile, scaffold_type):
     # Assertions
     assert isinstance(seq_infile, str), 'Absolute pathname must be passed \
     as a string.'
-    assert isinstance(scaffold_type, str), 'Scaffold type must be passed as a \
+    assert isinstance(scaffold_type, str), 'Scaffold type must be passed as a\
     string.'
     assert scaffold_type == 'pTpA' or scaffold_type == 'Abf1TATA', 'Scaffold \
     type must be specified as either pTpA or Abf1TATA.'
@@ -246,16 +246,14 @@ def write_num_and_len_of_seqs_to_file(input_seqs):
     # Functionality
     num_seqs = get_seq_count(input_seqs)
     with smart_open(input_seqs, 'r') as f:
-        line = f.readline()
-        try:
-            line = check_valid_line(line)
-        except line == 'skip_line':
+        line = check_valid_line(f.readline())
+        if line == 'skip_line':
             raise AssertionError('First line is not valid.')
         seq, _ = separate_seq_and_el_data(line)
         len_seqs = len(seq)  # assumes all sequences padded to same length
-    with smart_open(input_seqs, "r+") as f:
+    with smart_open(input_seqs, 'r+') as f:
         contents = f.read()
-    with smart_open(input_seqs, "w+") as f:
+    with smart_open(input_seqs, 'w+') as f:
         line_to_append = 'number_of_seqs_in_file\t' + str(num_seqs) + '\n'
         line_to_append += 'length_of_each_sequence\t' + str(len_seqs) + '\n'
         if input_seqs.endswith('.gz'):
@@ -304,10 +302,8 @@ def get_num_and_len_of_seqs_from_file(input_seqs):
         be of the form: "number_of_seqs_in_file\t<###>" where <###> is the\
         number of sequences in the file.'
         token, num_seqs = separate_seq_and_el_data(first_line)
-        try:
-            num_seqs = int(num_seqs)
-        except ValueError:
-            raise AssertionError('Number of sequences on first line must be\
+        if num_seqs % 1 != 0:
+            raise ValueError('Number of sequences on first line must be\
             an integer.')
         assert token == 'number_of_seqs_in_file', 'First line of the input\
         file must be of the form: "number_of_seqs_in_file\t<###>" where\
@@ -319,10 +315,8 @@ def get_num_and_len_of_seqs_from_file(input_seqs):
         Must be of the form: "length_of_each_sequence\t<###>" where <###> is\
         the length of every sequence in the file.'
         token, len_seqs = separate_seq_and_el_data(second_line)
-        try:
-            len_seqs = int(len_seqs)
-        except ValueError:
-            raise AssertionError('Sequence length on second line must be an\
+        if len_seqs % 1 != 0:
+            raise ValueError('Sequence length on second line must be an\
             integer.')
         assert token == 'length_of_each_sequence', 'Second line of the input\
         file must be of the form: "length_of_each_sequence\t<###>" where\
@@ -349,7 +343,7 @@ def create_sample_data(input_seqs, sample_size):
     Args:
     -----
         input_seqs (str) -- the absolute path of the input file
-        containing sequence adn expression level data to sample.
+        containing sequence and expression level data to sample.
 
         sample_size (int) -- the number of samples to take from
         the input file.
@@ -366,6 +360,8 @@ def create_sample_data(input_seqs, sample_size):
     assert os.path.exists(input_seqs), 'Input file does not exist.'
     assert isinstance(sample_size, int), 'Number of sequences to sample must\
     be passed as an integer.'
+    assert sample_size < get_seq_count(input_seqs), 'Sample size must be\
+    smaller than the number of sequences in the input file.'
     # Functionality
     index = input_seqs.rfind('/') + 1
     insert = str(sample_size) + '_from_'
