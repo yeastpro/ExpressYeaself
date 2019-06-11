@@ -33,3 +33,6 @@ expressyeaself/tests/test_files/*
 
 # Ignore notebooks created for unit test development
 expressyeaself/tests/*.ipynb
+
+# Ignore .coverage
+.coverage
