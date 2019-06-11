@@ -1,6 +1,14 @@
+coverage
+coveralls
+flake8
 jupyter
+keras
 numpy
 pandas
 pytest
+pytest-cov<2.6.0
+seaborn
 tensorflow
+tf-nightly
+tqdm
 xlrd
