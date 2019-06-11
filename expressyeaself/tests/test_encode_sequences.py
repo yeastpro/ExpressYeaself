@@ -12,6 +12,7 @@ def test_encode_sequences_with_method():
     Tests the wrapper function that encodes all promoter sequences
     in an input file by a specified method.
     """
+    # Test case 1:
 
     return
 
@@ -21,11 +22,26 @@ def test_one_hot_encode_sequence():
     Tests the function that encodes the string representation of a
     nucleotide sequence using the 'One-Hot' encoding method.
     """
+    # Test case 1 : valid input
     seq = 'AAA'
     one_hot_seq = test.one_hot_encode_sequence(seq)
     assert one_hot_seq == [[1, 0, 0, 0, 0],
                            [1, 0, 0, 0, 0],
                            [1, 0, 0, 0, 0]]
+    # Test case 2: valid characters but lower case
+    seq = 'acgnt'
+    out_seq = test.one_hot_encode_sequence(seq)
+    assert out_seq == [[1, 0, 0, 0, 0],
+                       [0, 0, 0, 1, 0],
+                       [0, 0, 1, 0, 0],
+                       [0, 0, 0, 0, 1],
+                       [0, 1, 0, 0, 0]]
+    # Test case 2: invalid input
+    seq = 'XYZXYZXYZ'
+    one_hot_seq = test.one_hot_encode_sequence(seq)
+    
+
+
 
     return
 
