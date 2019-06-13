@@ -9,7 +9,179 @@ from expressyeaself.utilities import get_time_stamp as get_time_stamp
 from expressyeaself.utilities import (separate_seq_and_el_data as
                                       separate_seq_and_el_data)
 from expressyeaself.utilities import smart_open as smart_open
+import numpy as np
 import os
+import pandas as pd
+import random
+
+
+def sort_by_exp_level(input_seqs):
+    """
+    Given an input file of sequences tab separated with their
+    associated expression levels, sorts the lines of the file
+    by expression level, with the highest levels at the top of
+    the file.
+
+    Args:
+    -----
+        input_seqs (str) -- the absolute path of the input file
+        containing sequences to be sorted by expression level.
+
+    Returns:
+    -----
+        sorted_df (pandas.DataFrame) -- a data frame where rows
+        are sorted in descending order based on expression level.
+    """
+    # Assertions
+    assert isinstance(input_seqs, str), 'Path name for input file must be \
+    passed as a string.'
+    assert os.path.exists(input_seqs), 'Input file does not exist.'
+    # Functionality
+    with smart_open(input_seqs, 'r') as f:
+        line = check_valid_line(f.readline())
+        seq1, _ = separate_seq_and_el_data(line)
+        line = check_valid_line(f.readline())
+        seq2, _ = separate_seq_and_el_data(line)
+        exp_seq1 = 'number_of_seqs_in_file'
+        exp_seq2 = 'length_of_each_sequence'
+        if seq1 == exp_seq1 and seq2 == exp_seq2:
+            skip = 2
+        else:
+            skip = 0
+    # Import data into a pandas data frame
+    df = pd.read_csv(input_seqs, sep='\t', names=['seq', 'el'], skiprows=skip)
+    # Sort it based on expression level
+    sorted_df = df.sort_values('el', ascending=False)
+    sorted_df = sorted_df.reset_index()
+    sorted_df = sorted_df.drop(columns='index')
+
+    return sorted_df
+
+
+def discard_mid_data(sorted_df, percentile=0.25):
+    """
+    Takes a pandas data frame of sequences and their associated
+    expression levels, sorted in descending order by these values,
+    and returns a data frame containing only the top and bottom
+    'percentile' fractions of the data with regard to expression
+    level. For example, if 'percentile=0.25', the middle 50 % of the
+    data will be discarded, and the resulting data frame will only
+    contain rows of the highest 25 % and lowest 25 % of exp levels.
+
+    Args:
+    -----
+        sorted_df (pandas.DataFrame) -- the input data frame with
+        sequence data in a column labelled 'seq' and the associated
+        expression level data in a column labelled 'el'. Rows are
+        sorted in descending order based on expression level.
+
+        percentile (float) -- the fraction of data with the highest
+        and lowest expression levels to be kept.
+
+    Returns:
+    -----
+        df_mid_discarded (pandas.DataFrame) -- the resulting data
+        frame after discarding the middle (1 - 2 * percentile)
+        rows. This data frame has length:
+        (2 * percentile * len(sorted_df))
+    """
+    # Assertions
+    assert isinstance(sorted_df, pd.DataFrame), ('Input data frame must be of'
+                                                 ' type pandas.DataFrame')
+    assert isinstance(percentile, float), ('The "percentile" variable must be'
+                                           ' passed as a float.')
+    assert percentile < 0.5, ('"percentile" must be less than 0.5')
+    # Functionality
+    df_len = len(sorted_df)
+    divisor = int(1 / percentile)
+    high_index = df_len // divisor
+    low_index = df_len * (divisor - 1) // divisor
+    df_high = sorted_df.iloc[:high_index]
+    df_low = sorted_df.iloc[low_index:]
+    difference = len(df_high) - len(df_low)
+    # Ensuring data slices are the same size
+    if difference != 0:
+        if difference > 0:
+            high_index -= difference
+        if difference < 0:
+            low_index += difference
+    df_high = sorted_df.iloc[:high_index]
+    df_low = sorted_df.iloc[low_index:]
+    df_mid_discarded = pd.concat([df_high, df_low])
+
+    return df_mid_discarded
+
+
+def binarize_data(input_df):
+    """
+    Takes a data frame of sequence and expression level data, where
+    rows have been sorted in descending order based on expression
+    level, and the middle portion has been discarded (so that only
+    the top and bottom percentiles remain), and binarizes the
+    expression levels. Binarization will see those sequences in the
+    top percentile to have an expression level of 1 (expresses) and
+    sequences in the bottom percentile having an expression level
+    of 0 (does not express). Assumes columns are labelled 'seq' and
+    'el' respectively.
+
+    Args:
+    -----
+        input_df (pandas.DataFrame) -- the input data frame, where
+        rows have been sorted based on expression levels, and the
+        middle portion of the data has been discarded so that only
+        the top and bottom pecentiles remain.
+
+    Returns:
+    -----
+        input_df (pandas.DataFrame) -- data frame modified so
+        that expression levels have been binarized into 1 or 0.
+    """
+    # Assertions
+    assert isinstance(input_df, pd.DataFrame), ('Input data frame must be of'
+                                                'type pandas.DataFrame')
+    # Functionality
+    # Define an array of binary values
+    does_express = np.ones(len(input_df) // 2).astype(int)
+    does_not_express = np.zeros(len(input_df) // 2).astype(int)
+    assert len(does_express) == len(does_not_express)
+    binary_values = np.concatenate((does_express, does_not_express), axis=0)
+    input_df = input_df.drop(columns='el')
+    input_df['el'] = binary_values
+
+    return input_df
+
+
+def write_df_to_file(input_df):
+    """
+    Writes the content of an input pandas data frame containing
+    sequence data (in a column called 'seq') and expression level
+    data (in a column called 'el') to an output file of specified
+    path.
+
+    Args:
+    -----
+        input_df (pandas.DataFrame) -- the input data frame whose
+        contents will be written to file.
+
+    Returns:
+    -----
+        absolute_path (str) -- the absolute path of the the output
+        file where the contents of the data frame are written.
+    """
+    # Assertions
+    assert isinstance(input_df, pd.DataFrame), ('Input data frame must be of'
+                                                 ' type pandas.DataFrame')
+    # Functionality
+    # Defining the path name of the output file.
+    relative_path = 'example/'
+    time_stamp = get_time_stamp()
+    relative_path += 'processed_data/' + time_stamp + '_df_to_file.txt'
+    absolute_path = os.path.join(os.getcwd(), relative_path)
+    # Writing to file
+    input_df.to_csv(absolute_path, header=None, index=None,
+                    sep='\t', mode='w', columns=['seq', 'el'])
+
+    return absolute_path
 
 
 def get_max_min_mode_length_of_seqs(input_seqs):
@@ -80,7 +252,8 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
         file containing the sequences of modal length.
     """
     # Assertions
-    assert isinstance(input_seqs, str), 'Input file pathname must be a string.'
+    assert isinstance(input_seqs, str), ('Input file pathname must be a'
+                                         'string.')
     assert os.path.isfile(input_seqs), 'Input file does not exist!'
     assert isinstance(scaffold_type, (str, type(None))), 'Scaffold type must\
     be passed as a string.'
@@ -363,21 +536,24 @@ def create_sample_data(input_seqs, sample_size):
     assert sample_size < get_seq_count(input_seqs), 'Sample size must be\
     smaller than the number of sequences in the input file.'
     # Functionality
+    # Define output file path
     index = input_seqs.rfind('/') + 1
     insert = str(sample_size) + '_from_'
-    output_seqs = input_seqs[:index] + insert + input_seqs[index:]
+    sample_seqs = input_seqs[:index] + insert + input_seqs[index:]
+    # Pull sequences to create sample data
     with smart_open(input_seqs, 'r') as inf:
-        with smart_open(output_seqs, 'w') as outf:
-            count = -1
-            while count < sample_size + 1:
-                count += 1
-                line = inf.readline()
-                if count < 2:  # skip the first 2 lines
-                    continue
-                outf.write(line)
-    write_num_and_len_of_seqs_to_file(output_seqs)
+        inf.readline()
+        inf.readline()  # skip the first 2 info lines
+        all_lines = inf.readlines()
+        for i in range(50):
+            lines = random.sample(all_lines, sample_size)
+    with smart_open(sample_seqs, 'w') as g:
+        for line in lines:
+            g.write(line)
+    # Write number and length of sequence info to top of resulting file
+    write_num_and_len_of_seqs_to_file(sample_seqs)
 
-    return output_seqs
+    return sample_seqs
 
 
 # def split_scaffolds_by_type(infile):
