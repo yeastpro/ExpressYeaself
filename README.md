@@ -49,7 +49,7 @@ For further details on the scientific background of our project and back-end ope
 #### Installation
 Execute the following ``commands`` in your computer's terminal application to install our package:  
 
-1. a) Either clone the _ExpressYeaself_ repository:
+1. Clone the _ExpressYeaself_ repository:
 
 	``git clone https://github.com/yeastpro/ExpressYeaself.git`` 
 
