@@ -11,9 +11,11 @@ Authors: **Joe Abbott**, **Keertana Krishnan**, **Guoyao Chen**.
 ----
 ### Overview
 
-_ExpressYeaself_ is an open source scientific software package that aims to quickly and accurately predict the contribution a promoter sequence has on on the expression of genes in **_Saccharomyces cerevisiae_** (or '_Brewer's yeast_ '). Doing so will streamline the  process in the synthesis of biotherapeautics - such as insulin -  
+_ExpressYeaself_  is an open source scientific software package that aims to quickly and accurately predict the contribution a promoter sequence has on on the expression of genes in **_Saccharomyces cerevisiae_** (or '_Brewer's yeast_ '). 
 
-For further details on the background science and operation of our package, please see our [use cases](https://github.com/yeastpro/ExpressYeaself/blob/master/doc/use_cases.md).
+This will allow the costly and time-consuming trial-and-error processes in the development and synthesis of biotherapeutics to be streamlined. Our goal is to use machine learning and data mining to make **recommendations** on which promoter sequences are likely to contribute to high levels of gene expression, and which **are not**.  
+
+For further details on the scientific background of our project and back-end operation of our package, please see our [use cases](https://github.com/yeastpro/ExpressYeaself/blob/master/doc/use_cases.md).
 
 ----
 ### Current Features
@@ -58,13 +60,16 @@ Execute the following ``commands`` in your computer's terminal application to in
 
 
 #### Getting started
-Now you have installed our package and downloaded the raw data, you are ready to start using our features! You can use our interactive notebooks to take you through the process. 
+Now you have installed our package and downloaded the raw data, you are ready to start using our features! You can use our interactive notebooks to take you through the process: 
 
 * Navigate into the directory containing our _How to_ guides:  
 	``cd doc/how_to_guides``
-* To start processing the data, use _jupyter_ to open our first interactive notebook:
+* To start processing the data, use _jupyter_ to open our first interactive notebook:  
 	`` jupyter notebook 1_how_to_process_raw_data.ipynb &``
-* Follow the instructions in the notebook, choose your parameters, and process the data. When you're done, save and exit the notebook.
+* Follow the instructions in the notebook, choose your parameters, and process the data. 
+* When you're done, save and exit the notebook.
+* You can then start to encode your data and train your model:
+	`` jupyter notebook 2_how_to_train_model.ipynb &``
 
 ----
 ### References
