@@ -10,6 +10,7 @@ example/processed_data/.ipynb_checkpoints/
 expressyeaself/__pycache__/*
 expressyeaself/tests/__pycache__/*
 example/__pycache__/*
+expressyeaself/models/*/__pycache__/
 
 # Ignore development notebooks
 copy_ExampleNetworks.ipynb
