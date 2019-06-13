@@ -22,7 +22,8 @@ MODELS = ['1DCNN', '1DLOCCON', 'LSTM']
 
 
 def encode_sequences_with_method(input_seqs, method='One-Hot',
-                                 scale_els=True, model_type='1DCNN'):
+                                 scale_els=True, model_type='1DCNN',
+                                 binarized_els=False):
     """
     A wrapper function that encodes all of the sequences in an
     input file according to the specified method, and returns
@@ -136,6 +137,9 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
         exp_levels = exp_levels / abs_max_el
     else:  # If no scaling required
         abs_max_el = None
+    # If expression levels are binarized, convert them from float ---> int
+    if binarized_els:
+        exp_levels = exp_levels.astype(int)
 
     return encoded_seqs, exp_levels, abs_max_el
 
