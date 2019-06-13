@@ -12,7 +12,6 @@ expressyeaself/tests/__pycache__/*
 example/__pycache__/*
 
 # Ignore development notebooks
-1d_locally_connected.ipynb
 copy_ExampleNetworks.ipynb
 process_data.ipynb
 
