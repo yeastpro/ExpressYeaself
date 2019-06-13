@@ -12,8 +12,10 @@ from keras.models import Sequential
 from keras.layers import (Dense, Dropout, Flatten,  # InputLayer
                           LocallyConnected1D)  # BatchNormalization
 import matplotlib.pyplot as plt
-import expressyeaself.encode_sequences as encode
+import context
 # %matplotlib inline
+
+encode = context.encode_sequences
 
 
 def encode_data(datapath):

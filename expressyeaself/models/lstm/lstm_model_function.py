@@ -12,6 +12,10 @@ from keras.layers import LSTM
 # from keras.datasets import mnist
 # from sklearn.preprocessing import OneHotEncoder
 import matplotlib.pyplot as plt
+import context
+
+encode = context.encode_sequences
+construct = context.construct_neural_net_input
 
 
 def load_raw_data(data):
