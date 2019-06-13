@@ -62,8 +62,8 @@ Execute the following ``commands`` in your computer's terminal application to in
 #### Getting started
 Now you have installed our package and downloaded the raw data, you are ready to start using our features! You can use our interactive notebooks to take you through the process: 
 
-* Navigate into the directory containing our _How to_ guides:  
-	``cd doc/how_to_guides``
+* Navigate into the directory containing our interactive guides:  
+	``cd expressyeaself/interaction/``
 * To start processing the data, use _jupyter_ to open our first interactive notebook:  
 	`` jupyter notebook 1_how_to_process_raw_data.ipynb &``
 * Follow the instructions in the notebook, choose your parameters, and process the data. 
