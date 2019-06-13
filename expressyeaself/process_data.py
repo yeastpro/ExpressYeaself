@@ -223,7 +223,7 @@ def process_raw_data(input_seqs, scaffold_type=None, percentile=None,
     else:
         print('Padding sequences...')
         input_seqs = build.pad_sequences(input_seqs, pad_front=pad_front,
-                                     extra_padding=extra_padding)
+                                         extra_padding=extra_padding)
     if not homogeneous:  # then they will have been padded
         processed_data += '_padded_at'
         if pad_front:

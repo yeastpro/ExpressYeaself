@@ -170,7 +170,7 @@ def write_df_to_file(input_df):
     """
     # Assertions
     assert isinstance(input_df, pd.DataFrame), ('Input data frame must be of'
-                                                 ' type pandas.DataFrame')
+                                                ' type pandas.DataFrame')
     # Functionality
     # Defining the path name of the output file.
     relative_path = 'example/'

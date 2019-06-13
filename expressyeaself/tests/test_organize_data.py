@@ -32,7 +32,8 @@ def test_sort_by_exp_level():
 
     return
 
-def test_discrad_mid_data():
+
+def test_discard_mid_data():
     """
     Test the function that pulls out the top and bottom percentiles
     of a data frame sorted by expression level, discarding the

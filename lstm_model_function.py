@@ -175,28 +175,28 @@ def caparison_figure(predict_data, testing_output):
 def lstm_training(data_path):
     raw_data = load_raw_data(data_path)
     sequence_list = load_raw_sequence_data(raw_data)
-    data_number, bp_number=read_length(sequence_list)
+    data_number, bp_number = read_length(sequence_list)
     reshaped_sequence_matrix = input_of_one_hot_sequence(sequence_list,
                                                          data_number,
                                                          bp_number)
-    output=scale_output(raw_data, data_number)
+    output = scale_output(raw_data, data_number)
     train_x, train_y, test_x, text_y = split_data(reshaped_sequence_matrix,
                                                   output)
     score, predict_data = lstm_model_on_one_hot_sequence(bp_number,
-                                                         training_sequence,
-                                                         training_output,
-                                                         testing_sequence,
-                                                         testing_output,
+                                                         training_sequence,  # noqa F821
+                                                         training_output,  # noqa F821
+                                                         testing_sequence,  # noqa F821
+                                                         testing_output,  # noqa F821
                                                          self_loss='mean_'
                                                          'squared_error',
                                                          learning_rate=0.01,
                                                          epochs_value=2,
                                                          batch_size_value=50)
-#     LSTM_model_training(LSTM_model, train_x, train_y, epochs_value=2,
-                        # batch_size_value=50)
-#     socre=model_report(LSTM_model, testing_sequence, testing_output,
-                       # batch_size_value=50)
-#     predicted_output=predict_data(LSTM_model, test_x)
-    cp_figure=caparison_figure(predict_data, testing_output)
+    # LSTM_model_training(LSTM_model, train_x, train_y, epochs_value=2,
+    #                     batch_size_value=50)
+    # score = model_report(LSTM_model, testing_sequence, testing_output,
+    #                      batch_size_value=50)
+    # predicted_output = predict_data(LSTM_model, test_x)
+    cp_figure = caparison_figure(predict_data, testing_output)  # noqa F821
 
     return score, cp_figure

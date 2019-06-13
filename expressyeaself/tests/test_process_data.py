@@ -108,11 +108,11 @@ def test_process_raw_data():
                                       report_times=False, report_loss=False,
                                       percentile=0.25,
                                       create_sample_of_size=size)
-    assert utilities.get_seq_count(processed) -2 == 2
+    assert utilities.get_seq_count(processed) - 2 == 2
     index = processed.rfind('/') + 1
     insert = str(size) + '_from_'
     sample = processed[:index] + insert + processed[index:]
-    assert utilities.get_seq_count(sample) -2 == size
+    assert utilities.get_seq_count(sample) - 2 == size
     os.remove(trial_path)
     os.remove(processed)
     os.remove(sample)

@@ -64,8 +64,6 @@ def test_one_hot_encode_sequence():
     except Exception:
         pass
 
-
-
     return
 
 
