@@ -7,7 +7,7 @@ An open source predictive model of protein expression in yeast, written in Pytho
 
 ## Summary
 
-ExpressYeaself is a ...
+ExpressYeaself is an open source scientific software package that aims to quickly and accurately predict the contribution a promoter sequence has on on the expression of a gene in yeast. For further details on 
 
 ## Configuration
 
