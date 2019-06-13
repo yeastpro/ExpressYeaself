@@ -51,8 +51,8 @@ def test_process_raw_data():
         for oligo in oligos:
             f.write(flank_A + oligo + flank_B + '\t123.4\n')
     processed = test.process_raw_data(trial_path, scaffold_type=scaff,
-                                      homogeneous=True, report_times=False,
-                                      report_loss=False)
+                                      homogeneous=True, report_times=True,
+                                      report_loss=True)
     with open(processed, 'r') as g:
         assert utilities.get_seq_count(processed) - 2 == len(oligos) - 1
         g.readline()
@@ -62,6 +62,8 @@ def test_process_raw_data():
             exp_seq = scaff_pre + oligo + scaff_post
             assert seq == exp_seq
     os.remove(processed)
+    idx = processed.find('20') + 21
+    os.remove(processed[:idx] + 'process_report.txt')
     # Test case 3: extra padding at front
     processed = test.process_raw_data(trial_path, scaffold_type=scaff,
                                       pad_front=True, extra_padding=3,
@@ -82,7 +84,7 @@ def test_process_raw_data():
         for oligo in oligos:
             f.write(flank_A + oligo + flank_B + '\t123.4\n')
     processed = test.process_raw_data(trial_path, scaffold_type=scaff,
-                                      deflank=False,
+                                      deflank=False, homogeneous=True,
                                       insert_into_scaffold=False,
                                       report_times=True, report_loss=True)
     with open(trial_path, 'r') as f:
@@ -105,7 +107,7 @@ def test_process_raw_data():
     size = 1
     processed = test.process_raw_data(trial_path, scaff, deflank=False,
                                       insert_into_scaffold=False,
-                                      report_times=False, report_loss=False,
+                                      report_times=True, report_loss=True,
                                       percentile=0.25,
                                       create_sample_of_size=size)
     assert utilities.get_seq_count(processed) - 2 == 2
@@ -116,5 +118,7 @@ def test_process_raw_data():
     os.remove(trial_path)
     os.remove(processed)
     os.remove(sample)
+    idx = processed.find('20') + 21
+    os.remove(processed[:idx] + 'process_report.txt')
 
     return
