@@ -26,7 +26,8 @@ def test_process_raw_data():
     with open(trial_path, 'w') as f:
         for oligo in oligos:
             f.write(flank_A + oligo + flank_B + '\t123.4\n')
-    processed = test.process_raw_data(trial_path, scaffold_type=scaff)
+    processed = test.process_raw_data(trial_path, scaffold_type=scaff,
+                                      report_times=False, report_loss=False)
     with open(processed) as g:
         assert utilities.get_seq_count(processed) - 2 == len(oligos)
         g.readline()
@@ -50,7 +51,8 @@ def test_process_raw_data():
         for oligo in oligos:
             f.write(flank_A + oligo + flank_B + '\t123.4\n')
     processed = test.process_raw_data(trial_path, scaffold_type=scaff,
-                                      homogeneous=True)
+                                      homogeneous=True, report_times=False,
+                                      report_loss=False)
     with open(processed, 'r') as g:
         assert utilities.get_seq_count(processed) - 2 == len(oligos) - 1
         g.readline()
@@ -61,9 +63,9 @@ def test_process_raw_data():
             assert seq == exp_seq
     os.remove(processed)
     # Test case 3: extra padding at front
-    trial_path = 'trial_file.txt'
     processed = test.process_raw_data(trial_path, scaffold_type=scaff,
-                                      pad_front=True, extra_padding=3)
+                                      pad_front=True, extra_padding=3,
+                                      report_times=False, report_loss=False)
     with open(processed, 'r') as g:
         assert utilities.get_seq_count(processed) - 2 == len(oligos)
         g.readline()
@@ -72,6 +74,7 @@ def test_process_raw_data():
             seq, el = utilities.separate_seq_and_el_data(g.readline())
             exp_seq = ('P' * 5) + scaff_pre + oligo + scaff_post
             assert seq == exp_seq
+    os.remove(processed)
     # Test case 4: if no processing was performed
     trial_path = 'trial_file.txt'
     oligos = ['A' * 80, 'T' * 80, 'G' * 80, 'C' * 80]
@@ -80,11 +83,38 @@ def test_process_raw_data():
             f.write(flank_A + oligo + flank_B + '\t123.4\n')
     processed = test.process_raw_data(trial_path, scaffold_type=scaff,
                                       deflank=False,
-                                      insert_into_scaffold=False)
+                                      insert_into_scaffold=False,
+                                      report_times=True, report_loss=True)
     with open(trial_path, 'r') as f:
         with open(processed, 'r') as g:
             g.readline()
-            g.readline()
+            g.readline()  # skip first 2 info lines
             assert f.read() == g.read()
+    os.remove(trial_path)
+    idx = processed.find('20') + 21
+    os.remove(processed[:idx] + 'process_report.txt')
+    os.remove(processed)
+    # Test case 4: pulling out top and bottom percentiles, and sample data
+    trial_path = 'trial_file.txt'
+    scaff = 'pTpA'
+    with open(trial_path, 'w') as f:
+        f.write('ATGC\t5.0\n')
+        f.write('ATGC\t6.0\n')
+        f.write('ATGC\t7.0\n')
+        f.write('ATGC\t8.0\n')
+    size = 1
+    processed = test.process_raw_data(trial_path, scaff, deflank=False,
+                                      insert_into_scaffold=False,
+                                      report_times=False, report_loss=False,
+                                      percentile=0.25,
+                                      create_sample_of_size=size)
+    assert utilities.get_seq_count(processed) -2 == 2
+    index = processed.rfind('/') + 1
+    insert = str(size) + '_from_'
+    sample = processed[:index] + insert + processed[index:]
+    assert utilities.get_seq_count(sample) -2 == size
+    os.remove(trial_path)
+    os.remove(processed)
+    os.remove(sample)
 
     return

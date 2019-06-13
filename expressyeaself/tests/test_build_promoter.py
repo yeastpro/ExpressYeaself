@@ -65,6 +65,7 @@ def test_remove_flanks_from_all_seqs():
                 elif i == 1:
                     assert seq == 'TTTT'
         os.remove(trial_path)
+        os.remove(out_path)
     # Test case 2: invalid flank sequences
     scaff = 'Abf1TATA'
     flank_A = 'NNNN'
@@ -91,6 +92,8 @@ def test_remove_flanks_from_all_seqs():
     with open(out_path, 'r') as f:
         assert f.readline() == 'AAAA\t3.9\n'
         assert f.readline() == 'TTTT\t45.0\n'
+    os.remove(trial_path)
+    os.remove(out_path)
 
     return
 
@@ -140,6 +143,8 @@ def test_insert_all_seq_into_one_scaffold():
             line = f.readline()
             seq, _ = utilities.separate_seq_and_el_data(line)
             assert seq == scaff_pre + oligo + scaff_post
+    os.remove(trial_path)
+    os.remove(out_path)
     # Test case 2: input file has invalid line
     with open(trial_path, 'w') as f:
         f.write('GGGG\t1.0\n')
@@ -153,6 +158,8 @@ def test_insert_all_seq_into_one_scaffold():
             line = f.readline()
             seq, _ = utilities.separate_seq_and_el_data(line)
             assert seq == scaff_pre + oligo + scaff_post
+    os.remove(trial_path)
+    os.remove(out_path)
 
     return
 
@@ -173,6 +180,7 @@ def test_pad_sequences():
     with open(trial_path, 'r') as f:
         with open(out_path, 'r') as g:
             assert f.read() == g.read()  # contents shouldn't change
+    os.remove(out_path)
     # Test case 2: homogeneous seqs with extra padding, padding at back
     extra = 2
     out_path = test.pad_sequences(trial_path, extra_padding=extra)
@@ -181,6 +189,7 @@ def test_pad_sequences():
             line = f.readline()
             seq, _ = utilities.separate_seq_and_el_data(line)
             assert seq == oligo + ('P' * extra)
+    os.remove(out_path)
     # Test case 3: inhomogeneous sequences, with one invalid line
     with open(trial_path, 'w') as f:
         for i in range(0, len(oligos)):
@@ -194,6 +203,8 @@ def test_pad_sequences():
     out_path = test.pad_sequences(trial_path, pad_front=True)
     max_l, min_l, mode = organize.get_max_min_mode_length_of_seqs(out_path)
     assert max_l == min_l
+    os.remove(trial_path)
+    os.remove(out_path)
 
     return
 

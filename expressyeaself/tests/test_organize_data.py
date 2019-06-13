@@ -9,6 +9,50 @@ test = context.organize_data
 utilities = context.utilities
 
 
+def test_sort_by_exp_level():
+    """
+    Tests the function that sorts the rows in an input file based
+    on their expression level, sorted in desceding order.
+    """
+    # Test case 1: normal input
+    trial_path = 'trial_file.txt'
+    with open(trial_path, 'w') as f:
+        f.write('ATGC\t5.0\n')
+        f.write('ATGC\t6.0\n')
+        f.write('ATGC\t7.0\n')
+        f.write('ATGC\t8.0\n')
+    sorted_df = test.sort_by_exp_level(trial_path)
+    prev_el = sorted_df['el'][0]
+    for idx, row in sorted_df.iterrows():
+        if idx == 0:
+            continue
+        curr_el = row['el']
+        assert curr_el < prev_el
+        prev_el = curr_el
+
+    return
+
+def test_discrad_mid_data():
+    """
+    Test the function that pulls out the top and bottom percentiles
+    of a data frame sorted by expression level, discarding the
+    middle portion.
+    """
+    # Test case 1: normal input
+    trial_path = 'trial_file.txt'
+    with open(trial_path, 'w') as f:
+        f.write('ATGC\t5.0\n')
+        f.write('ATGC\t6.0\n')
+        f.write('ATGC\t7.0\n')
+        f.write('ATGC\t8.0\n')
+    sorted_df = test.sort_by_exp_level(trial_path)
+    percentile = 0.25
+    discarded = test.discard_mid_data(sorted_df, percentile)
+    assert len(discarded) == 2 * percentile * len(sorted_df)
+
+    return
+
+
 def test_get_max_min_mode_length_of_seqs():
     """
     Tests the function that returns the maximum, minimum, and modal

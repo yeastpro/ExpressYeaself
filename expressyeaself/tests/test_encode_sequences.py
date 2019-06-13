@@ -3,8 +3,11 @@ A script containing unit tests for the functions in the
 encode_sequences.py script.
 """
 import expressyeaself.tests.context as context
+import numpy as np
+import os
 
 test = context.encode_sequences
+organize = context.organize_data
 
 
 def test_encode_sequences_with_method():
@@ -12,7 +15,25 @@ def test_encode_sequences_with_method():
     Tests the wrapper function that encodes all promoter sequences
     in an input file by a specified method.
     """
-    # Test case 1:
+    # Test case 1: homogeneous sequences, no extra padding
+    trial_path = 'trial_file.txt'
+    oligos = ['AAAA', 'TTTT', 'GGGG', 'CCCC']
+    with open(trial_path, 'w') as f:
+        el = - 0.67
+        num = 5.5
+        for oligo in oligos:
+            el += num
+            f.write(oligo + '\t' + str(el) + '\n')
+    organize.write_num_and_len_of_seqs_to_file(trial_path)
+    seqs, els, abs_max = test.encode_sequences_with_method(trial_path)
+    assert isinstance(seqs, np.ndarray)
+    assert isinstance(els, np.ndarray)
+    assert isinstance(abs_max, float)
+    assert len(seqs) == len(oligos)
+    assert max(els) <= 1
+    assert min(els) >= -1
+    assert abs_max == - 0.67 + (4 * 5.5)
+    os.remove(trial_path)
 
     return
 
@@ -38,8 +59,10 @@ def test_one_hot_encode_sequence():
                        [0, 1, 0, 0, 0]]
     # Test case 2: invalid input
     seq = 'XYZXYZXYZ'
-    one_hot_seq = test.one_hot_encode_sequence(seq)
-    
+    try:
+        one_hot_seq = test.one_hot_encode_sequence(seq)
+    except Exception:
+        pass
 
 
 
