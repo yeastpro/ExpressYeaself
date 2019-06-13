@@ -34,8 +34,9 @@ before_script:
 script:
   - flake8
     #- python -m pytest
-  - py.test -s --pyargs expressyeaself --cov-report term-missing --cov=expressyeaself --cov-config .coveragerc
- 
+    #- py.test -s --pyargs expressyeaself --cov-report term-missing --cov=expressyeaself --cov-config .coveragerc
+  - ./run_tests.sh
+
 # calculate and report code coverage
 after_success:
   - coveralls
