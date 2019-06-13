@@ -128,8 +128,9 @@ def encode_sequences_with_method(input_seqs, method='One-Hot',
     infile.close()
     # Reshape array if needed as input to LSTM model
     if model_type == 'LSTM':
-        encoded_seqs = encoded_seqs.reshape(num_seqs, -1)
-        encoded_seqs = encoded_seqs.reshape(num_seqs, 1, (len_seq * 5))
+        encoded_seqs = encoded_seqs.reshape(int(num_seqs), -1)
+        encoded_seqs = encoded_seqs.reshape(int(num_seqs), 1,
+                                            (int(len_seq) * 5))
     # Scale expression level values to between -1 and 1
     if scale_els:
         abs_max_el = abs(max(exp_levels, key=abs))  # the absolute max value
