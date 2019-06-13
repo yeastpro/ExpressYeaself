@@ -13,7 +13,6 @@ import matplotlib.pyplot as plt
 import expressyeaself.encode_sequences as encode
 
 # %matplotlib inline
-
 def encode_data(datapath):
     """
     This function reads in a file and outputs a file with each of the
@@ -22,105 +21,17 @@ def encode_data(datapath):
     Output: file consisting of encoded sequences
     (encoded by scripted from encode_sequences file)
     """
-    en_data = encode.encode_sequences_with_method(datapath)
-    return en_data
+    sequences, expression_levels, max_el = encode.encode_sequences_with_method(datapath)
+    return sequences, expression_levels, max_el
 
-def data_to_df(en_data):
-    """
-    This function reads in the file with encoded sequences and
-    converts it into a dataframe, easily accessible by python tools.
-    Input: file with encoded sequences
-    Output:dataframe
-    """
-    proxy_df = pd.read_csv(en_data, names=['raw_sequence', 'ex_levels'], sep='\t')
-    return proxy_df
-
-def store_expression_levels(proxy_df):
-    """
-    This function reads in the dataframe of encoded sequences and
-    scales and stores the expression levels as a separate variable.
-    Input: dataframe
-    Output: np.array of scaled expression levels
-    """
-    expression_levels = np.array(proxy_df['ex_levels'])
-
-#     scaler = preprocessing.MinMaxScaler()
-#     reshaped = ex_levels.reshape((len(ex_levels), 1))
-#     expression_levels = scaler.fit_transform(reshaped)
-
-    return expression_levels
-
-def store_sequence_matrix(proxy_df):
-    """
-    This function reads in the dataframe of encoded sequences, consisting
-    of "raw matrices" per sequence, and converts and stores them all within
-    a (3-dimensional) np.array of each matrix per sequence. This will allow
-    the data to be better read by neural network objects.
-    Input: dataframe
-    Output: np.array consisting of all sequence matricies (3-dimensional array)
-    """
-    sequence_matrix = []
-
-    for sequence in proxy_df['raw_sequence']:
-        array_seq = np.array(ast.literal_eval(sequence))
-        sequence_matrix.append(array_seq)
-
-    sequence_matrix = np.array(sequence_matrix)
-
-    return sequence_matrix
-
-def data_to_df(en_data):
-    """
-    This function reads in the file with encoded sequences and
-    converts it into a dataframe, easily accessible by python tools.
-    Input: file with encoded sequences
-    Output:dataframe
-    """
-    proxy_df = pd.read_csv(en_data, names=['raw_sequence', 'ex_levels'], sep='\t')
-    return proxy_df
-
-def store_expression_levels(proxy_df):
-    """
-    This function reads in the dataframe of encoded sequences and
-    scales and stores the expression levels as a separate variable.
-    Input: dataframe
-    Output: np.array of scaled expression levels
-    """
-    expression_levels = np.array(proxy_df['ex_levels'])
-
-#     scaler = preprocessing.MinMaxScaler()
-#     reshaped = ex_levels.reshape((len(ex_levels), 1))
-#     expression_levels = scaler.fit_transform(reshaped)
-
-    return expression_levels
-
-def store_sequence_matrix(proxy_df):
-    """
-    This function reads in the dataframe of encoded sequences, consisting
-    of "raw matrices" per sequence, and converts and stores them all within
-    a (3-dimensional) np.array of each matrix per sequence. This will allow
-    the data to be better read by neural network objects.
-    Input: dataframe
-    Output: np.array consisting of all sequence matricies (3-dimensional array)
-    """
-    sequence_matrix = []
-
-    for sequence in proxy_df['raw_sequence']:
-        array_seq = np.array(ast.literal_eval(sequence))
-        sequence_matrix.append(array_seq)
-
-    sequence_matrix = np.array(sequence_matrix)
-
-    return sequence_matrix
-
-def data_shape(sequence_matrix):
+def data_shape(sequences):
     """
     This function reads in the np.array sequence matrix and outputs its
     dimensions.
-    Input: np.array
+    Input: np.array of sequences
     Output: tuple consisting of the dimensions of the input matrix
     """
-    shape = sequence_matrix.shape
+    shape = sequences.shape
     return shape
 
 def plot_results(fit):
@@ -157,18 +68,17 @@ def plot_results(fit):
 
     return ax1, ax2
 
-def tt_split(sequence_matrix, expression_levels):
+def tt_split(sequences, expression_levels):
     """
     This function reads in the np.array sequence matrix and expressions levels
     and performs a test-train split on the data.
-    Input: np.array sequence matrix and expression levels
+    Input: np.arrays of sequences and expression levels
     Output: train_x, test_x, train_y, test_y
     """
-    train_x, test_x, train_y, test_y = train_test_split(sequence_matrix, expression_levels, test_size=0.25)
+    train_x, test_x, train_y, test_y = train_test_split(sequences, expression_levels, test_size=0.25)
     return train_x, test_x, train_y, test_y
 
-def loc_con_1d_model(filters, kernel_size, strides, input_x, input_y, drop_rate, dense_units1, dense_units_final,
-optimizer, loss):
+def loc_con_1d_model(filters, kernel_size, strides, drop_rate, dense_units1, dense_units_final, optimizer, loss):
     """
     This function reads in various parameters to compiles a LocallyConnected1D
     model, consisting of various layers including Dropout, Flatten and
@@ -182,6 +92,11 @@ optimizer, loss):
     # make a global variable
     global model
 
+    # import shape for inputs
+    shape = data_shape(sequences)
+    input_x = shape[1]
+    input_y = shape[2]
+
     # initialize model
     model = Sequential()
     model.add(LocallyConnected1D(filters, kernel_size, strides=strides, input_shape=(input_x, input_y), activation='relu'))
@@ -194,7 +109,7 @@ optimizer, loss):
 #     model.add(Dropout(drop_rate))
 #     model.add(Dense(10))
 #     model.add(Dropout(drop_rate))
-    model.add(Dense(dense_units))
+    model.add(Dense(dense_units1))
     model.add(Dropout(drop_rate))
 
     # final flatten and dense layers
@@ -207,19 +122,19 @@ optimizer, loss):
     # return model summary
     return(model, model.summary())
 
-def model_eval(sequence_matrix, expression_levels, epochs, batch_size):
-     """
+def model_eval(sequences, expression_levels, epochs, batch_size):
+    """
     This function fits the LocallyConnected1D model, generated in the
-    loc_con_1d_model() function, using given train and test data sets. The
-    model evaluates acccuracy and loss scores and outputs these values
+    loc_con_1d_model() function, using the given train and test data sets.
+    The model evaluates accuracy and loss scores and outputs these values
     as well as a graphical visualization by calling the plot_results()
     function and passing through these values.
-    Input: sequence_matrix and expression_level arrays, number of epochs
-    to run the model for, and batch size (number of samples to train)
-    Output: accuracy and loss values, accuracy and loss graphs
+    Input: sequences and expression_level array, number of epochs to
+    run the model for, and batch size (number of samples to train)
+    Output: accuracy and loss values, accuracy and loss plots
     """
     # initialize training and testing values
-    train_x, test_x, train_y, test_y = tt_split(sequence_matrix, expression_levels)
+    train_x, test_x, train_y, test_y = tt_split(sequences, expression_levels)
 
     # fit model
     fit = model.fit(train_x, train_y, epochs=epochs, batch_size=batch_size, validation_data=(test_x, test_y))
@@ -229,7 +144,6 @@ def model_eval(sequence_matrix, expression_levels, epochs, batch_size):
 
     # plot results
     plt = plot_results(fit.history)
-    #plt.show()
 
     # return model accuracy
     return("Values: "+ str(model.metrics_names[0]) + ': ' + str(scores[0]) + ' ' + str(model.metrics_names[2]) + ': ' + str(scores[2]*100) + '%')
