@@ -40,8 +40,8 @@ promoter sequences are likely to contribute to high levels of gene expression,
 and which are not.
 License
 =======
-``ExpressYeaself`` is licensed under the MIT license. See the "LICENSE" file for
-information on the history of this software, terms & conditions for usage,
+``ExpressYeaself`` is licensed under the MIT license. See the "LICENSE" file
+for information on the history of this software, terms & conditions for usage,
 and a DISCLAIMER OF ALL WARRANTIES.
 All trademarks referenced herein are property of their respective holders.
 Copyright (c) 2018 -- Emissible (Joe Abbott, Keertana Krishnan, Guoyao Chen)
