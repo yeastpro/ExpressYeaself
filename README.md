@@ -9,7 +9,7 @@ Authors: **Joe Abbott**, **Keertana Krishnan**, **Guoyao Chen**.
 ----
 ### Overview
 
-_ExpressYeaself_  is an open source scientific software package that aims to quickly and accurately predict the contribution a promoter sequence has on on the expression of genes in **_Saccharomyces cerevisiae_** (or '_Brewer's yeast_ '). 
+_ExpressYeaself_  is an open source scientific software package that aims to quickly and accurately predict the contribution a promoter sequence has on the expression of genes in **_Saccharomyces cerevisiae_** (or '_Brewer's yeast_ '). 
 
 This will allow the costly and time-consuming trial-and-error processes in the development and synthesis of biotherapeutics to be streamlined. Our goal is to use machine learning and data mining to make **recommendations** on which promoter sequences are likely to contribute to high levels of gene expression, and which **are not**.  
 
