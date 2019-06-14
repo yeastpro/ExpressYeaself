@@ -1,10 +1,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/yeastpro/ExpressYeaself.svg?branch=master)](https://travis-ci.com/yeastpro/ExpressYeaself)
-[![Coverage Status](https://coveralls.io/repos/github/yeastpro/ExpressYeaself/badge.svg?branch=master&service=github)](https://coveralls.io/github/yeastpro/ExpressYeaself?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/yeastpro/ExpressYeaself/badge.svg?branch=master)](https://coveralls.io/github/yeastpro/ExpressYeaself?branch=master)
 
 # ExpressYeaself 
-  
-  
   
 Authors: **Joe Abbott**, **Keertana Krishnan**, **Guoyao Chen**.  
 
@@ -70,6 +68,73 @@ Now you have installed our package and downloaded the raw data, you are ready to
 * When you're done, save and exit the notebook.
 * You can then start to encode your data and train your model:
 	`` jupyter notebook 2_how_to_train_model.ipynb &``
+
+----
+### Directory Structure
+
+	ExpressYeaself (master)  
+    |---doc  
+        |---technology_reviews
+        	  |--1_sequencing_software_packages.md
+        	  |--2_neural_network_packages.md
+        |--timeline.md
+        |--use_cases.md
+    |---example  
+        |---Abf1TATA_data
+            |--Abf1TATA_scaffold.txt
+        |---pTpA_data
+            |--pTpA_scaffold.txt
+        |---processed_data
+            |--10000_from_20190610100252461788_homogeneous_deflanked_sequences_inserted_into_Abf1TATA_scaffold_with_exp_levels.txt.gz
+            |--10000_from_20190611170757656183_homogeneous_deflanked_sequences_with_exp_levels.txt.gz
+            |--10000_from_20190612130111781831_percentiles_els_binarized_homogeneous_deflanked_sequences_with_exp_levels.txt.gz
+        |--__init__.py
+        |--series_matrix_GSE104878-GPL17143.txt
+    |---expressyeaself  
+        |---interaction
+            |--1_how_to_process_raw_data.ipynb
+            |--context.py
+        |---models
+        	  |---1d_cnn
+        	      |--1D_CNN_builder.ipynb
+        	      |--context.py
+        	  |---1d_loccon
+        	      |--1d_locally_connected.ipynb
+        	      |--context.py
+        	      |--loc_con_1d.py
+        	  |---lstm
+        	      |--context.py
+        	      |--lstm_model_function.py
+        |---tests
+            |--__init__.py
+            |--context.py
+            |--test_build_promoter.py
+            |--test_encode_sequences.py
+            |--test_organize_data.py
+            |--test_process_data.py
+            |--test_utilities.py
+        |--__init__.py
+        |--build_promoter.py
+        |--construct_neural_net.py
+        |--encode_sequences.py
+        |--organize_data.py
+        |--process_data.py
+        |--utilities.py
+        |--version.py  
+    |--.coveragerc
+    |--.gitignore  
+    |--.travis.yml
+    |--LICENSE  
+    |--README.md 
+    |--download_data.sh
+    |--environment.yml
+    |--requirements.txt
+    |--runtests.sh 
+
+----
+### Contributions
+
+Any contributions to the project are warmly welcomed! If you discover any bugs, please report them in the [issues section](https://github.com/emissible/SPEEDCOM/issues) of this repository and we'll work to sort them out as soon as possible. If you have data that you think will be good to train our model on, please contact one of the authors.
 
 ----
 ### References
