@@ -14,6 +14,8 @@ import os
 import pandas as pd
 import random
 
+ROOT_DIR = os.getcwd()[:os.getcwd().rfind('Express')] + 'ExpressYeaself/'
+
 
 def sort_by_exp_level(input_seqs):
     """
@@ -173,13 +175,13 @@ def write_df_to_file(input_df):
                                                 ' type pandas.DataFrame')
     # Functionality
     # Defining the path name of the output file.
-    relative_path = 'example/'
     time_stamp = get_time_stamp()
-    relative_path += 'processed_data/' + time_stamp + '_df_to_file.txt'
-    absolute_path = os.path.join(os.getcwd(), relative_path)
+    relative_path = 'example/processed_data/' + time_stamp + '_df_to_file.txt'
+
+    absolute_path = os.path.join(ROOT_DIR, relative_path)
     # Writing to file
     input_df.to_csv(absolute_path, header=None, index=None,
-                    sep='\t', mode='w', columns=['seq', 'el'])
+                    sep='\t', mode='w+', columns=['seq', 'el'])
 
     return absolute_path
 
@@ -271,7 +273,7 @@ def pull_homogeneous_seqs(input_seqs, scaffold_type=None):
     else:
         relative_path += (scaffold_type + '_data/' + time_stamp + '_' +
                           scaffold_type + '_homogeneous_seqs.txt')
-    absolute_path = os.path.join(os.getcwd(), relative_path)
+    absolute_path = os.path.join(ROOT_DIR, relative_path)
     # Open the input and output files.
     infile = smart_open(input_seqs, 'r')
     output_seqs = smart_open(absolute_path, 'w')
@@ -585,7 +587,7 @@ def create_sample_data(input_seqs, sample_size):
 #     for type in types:
 #         # Create a new output file for each unique type of scaffold
 #         relative_path = 'example/' + type + '_scaffolds.txt'
-#         absolute_path = os.path.join(os.getcwd(), relative_path)
+#         absolute_path = os.path.join(ROOT_DIR, relative_path)
 #         outfile = smart_open(absolute_path, 'w')
 #         # Reduce scaffold data to only data of the current type
 #         type_df = scaff_df[scaff_df['Scaffold type'] == type]
