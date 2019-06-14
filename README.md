@@ -82,6 +82,8 @@ Now you have installed our package and downloaded the raw data, you are ready to
     |---example  
         |---Abf1TATA_data
             |--Abf1TATA_scaffold.txt
+        |---native_data
+            |--native_data.txt
         |---pTpA_data
             |--pTpA_scaffold.txt
         |---processed_data
