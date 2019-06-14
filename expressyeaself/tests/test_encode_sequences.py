@@ -46,17 +46,18 @@ def test_one_hot_encode_sequence():
     # Test case 1 : valid input
     seq = 'AAA'
     one_hot_seq = test.one_hot_encode_sequence(seq)
-    assert one_hot_seq == [[1, 0, 0, 0, 0],
-                           [1, 0, 0, 0, 0],
-                           [1, 0, 0, 0, 0]]
+    print(one_hot_seq)
+    assert np.allclose(one_hot_seq, np.array([[1, 0, 0, 0, 0],
+                                              [1, 0, 0, 0, 0],
+                                              [1, 0, 0, 0, 0]]))
     # Test case 2: valid characters but lower case
     seq = 'acgnt'
     out_seq = test.one_hot_encode_sequence(seq)
-    assert out_seq == [[1, 0, 0, 0, 0],
-                       [0, 0, 0, 1, 0],
-                       [0, 0, 1, 0, 0],
-                       [0, 0, 0, 0, 1],
-                       [0, 1, 0, 0, 0]]
+    assert np.allclose(out_seq, np.array([[1, 0, 0, 0, 0],
+                                          [0, 0, 0, 1, 0],
+                                          [0, 0, 1, 0, 0],
+                                          [0, 0, 0, 0, 1],
+                                          [0, 1, 0, 0, 0]]))
     # Test case 2: invalid input
     seq = 'XYZXYZXYZ'
     try:
