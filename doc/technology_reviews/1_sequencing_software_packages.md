@@ -16,25 +16,3 @@ In order to generate a complete nucleotide sequence for a promoter, we need to i
 Because storing such a large volume of data will be an issue, we need a fast and memory efficient method to generate the unique promoter sequences on the fly. This may be combined with functions to encode the sequences on the fly also, but this component isn't considered in this technology review.
 
 ## Solutions
-
-### A. _Bowtie2_
-
-#### Description
-
-_Bowtie2_ is a 
-
-
-#### Suitability
-
-
-### B. _Scaffolder_
-
-#### Description  
-
-Implemented in Ruby, _Scaffolder_ 
-
-## hello 
---
-this is better than vim 
-
-<center> heel </center>
