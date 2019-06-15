@@ -3,13 +3,12 @@ This script contains functions to aid building, training, testing
 and optimizing a neural network model.
 """
 import expressyeaself.encode_sequences as encode
-from expressyeaself.utilities import smart_open as smart_open
 from expressyeaself.utilities import get_time_stamp as get_time_stamp
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
-import tensorflow
+import tensorflow  # noqa: F401
 from tensorflow.keras.models import load_model
 
 ROOT_DIR = os.getcwd()[:os.getcwd().rfind('Express')] + 'ExpressYeaself/'
@@ -112,6 +111,7 @@ def load_saved_model(saved_model):
 
     return loaded_model
 
+
 def get_prediction(loaded_model, sequence):
     """
     Predicts the expression level of a given input sequence
@@ -127,8 +127,6 @@ def get_prediction(loaded_model, sequence):
         length for loaded model.
     """
     # Assertions
-    # assert isinstance(loaded_model,
-                      # tensorflow.keras.engine.training.Model)
     assert isinstance(sequence, str), 'Input seq must be a string.'
     # Functionality
     # Encode the sequence via One-Hot encoding
@@ -181,7 +179,6 @@ def get_predictions_for_input_file(input_seqs, model_to_use, sort_df=True,
     # Encode sequences, get predictions, insert values into data frame.
     for i in range(0, len(results_df)):
         seq = results_df['seq'][i]
-        enco_seq = np.array([encode.one_hot_encode_sequence(seq)])
         pred = get_prediction(loaded_model, seq)
         results_df['el_prediction'][i] = pred
     if sort_df:
