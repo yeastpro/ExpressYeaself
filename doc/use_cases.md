@@ -1,45 +1,46 @@
 # Use Cases
 
-## Background
+### _ExpressYeaself_
 
-Transcription factors are proteins that regulate the rate of transcription of DNA into mRNA, the polynucleotides needed to express proteins. These factors ensure that the right genes are expressed in the right cells at the right time. This is controlled through the turning 'on' or 'off' of specific genes by binding to DNA upstream of the gene at a certain target sequence. Once bound, the factor can make it easier or more difficult for RNA polymerase to bind to the promoter of the gene and transcribe it into mRNA.
+----
+### Background
 
-Protein expression refers to the way in which proteins are synthesized, modified and regulated. In the case of this project… [more biological background]
+The development of biotherapeutic agents for treatment of human conditions is a lengthy, multi-step process. Part of the design process is manipulating the genomic sequences responsible for the expression of the protein biotherapeutic agent.
 
-Determining the heterologous protein expression in eukaryotes, such as yeast, has been an ongoing challenge in research. However, with a greater understanding of transcription factors, it should be possible to manipulate and fine-tune levels of expression. Ultimately, this aids in improving the efficiency and reducing the cost and environmental burden of producing necessary biopharmaceuticals, such as insulin.
+In order to reduce the cost of making the biotherapeutic, higher expressing gene sequences are highly sought after. There is therefore a lot of research being done to find a way to quantify and rationalize the mechanism by which expression of proteins is affected.
 
-In the past few years, there has been a collective effort to systematically explore these transcription factors and their impacts using natural and synthetic biology. This has generated millions of data points which can now be integrated together to identify transcriptional motifs, sequences, and positions, using machine learning techniques. This allows the determination of the transcription factors that have the greatest impact on protein expression, which can then be used to develop an optimized predictive model.
+One well known effect is that of the _promoter sequence_; this regulates the transcription of genes upstream from it in a nucleotide, and hence affects the expression level. The trial-and-error process of finding the best promoter sequences is not only costly, but also very time consuming. 
 
-## Objectives
+By implementing deep learning methods through the use of neural network predictive modelling, _ExpressYeaself_ aims to predict the extent to which given promoter sequences may affect the expression level of the gene for which it is promoting. Having this tool can saves researchers a lot of time as they will quickly be able to discard sequences that have a very low probability of being effective before even entering the lab. They can then carry out the same trial and error process, but with a sample of promoter sequences that is potentially many orders of magnitude smaller than they typically would.
 
-Through predictive modeling, _ExpressYeaself_ aims to develop a greater understanding of protein expression in yeast based on the configurations of transcription factors.
+This will have positive effects on the whole process; making it more streamlined and reducing downstream costs for consumers.
 
-## Components
+We are able to build statistical models with such high accuracy due to the public availability of very large (~ 62 million sequence) data sets. These have been produced by the systematic exploration and evaluation of natural and synthetic gene sequences over many years worth of research.
 
-(Flow Chart of package consisting of three different neural networks combined together, 
-including information about the layers and parametrization.)
+----
+### Objectives
 
-### Data cleaning
-_ExpressYeaself_ will use combined publicly available data from www.yeastract.com, yetfasco.ccbr.utoronto.ca/ and www.yestss.org/ as training data. This combination will require some cleaning to ensure uniformity, as well as encoding of gene sequences. 
+Through predictive modeling, _ExpressYeaself_ aims to develop a greater understanding of protein expression in yeast based on the deep learning of relationships between motifs present in promoter sequences.
 
-### Cross-Validation of existing models
-Existing models developed by Carl G. de Boer _et al._ will be used as a baseline to compare the 
-efficiency of the _ExpressYeaself_ model. We will also perform the:  
+----
+### Components
+
+#### Data Processing
+
+_ExpressYeaself_ will use data published by Carl de Boer as part of his publication "_Deciphering cis-regulatory logic with 100 million synthetic promoters_". We will develop a mechanism by which data can be processed in a large number of ways to allow different information to be conveyed by the data, and therefore different predictions to be made after training models. 
+
+#### Predictive Models
+
+This model will employ the use of a three neural networks:
   
-* Regularization the motif sequences  
-* Pair transcription factor effects with protein expressions
+* 1-dimensional convolutional neural network (**1DCNN**)  
+* 1-dimensional locally connected network (**1DLOCCON**)  
+* Long-Short-Term Memory (**LSTM**), a type of recurrent neural network.
 
-### Predictive Models
-This model will employ the use of a convolutional neural network (CNN), a long short term memory 
-network (LSTM) and a 1D locally connected netowrk as three separate systems, which are then combined 
-after their completing to determine an overall efficiency value. The data will be trained on both pTpA 
-and Abf1TATA data used by Carl G. de Boer in his work on [cis-regulatory models]
-(https://github.com/Carldeboer/CisRegModels). This will involve manipulation of hyperparameters to 
-deliver the most effective model for both sequence types.
+These models can be trained on both pTpA and Abf1TATA data, processed as desired by our back-end processing systems. The best architectures for each model type will be found through **_hyper-paramterization_** searches; a type of trial-and-error that finds the best parameters by brute force changing of parameters, retraining, and re-validation.
 
-## Implications
+----
+### Implications
 
-Better understanding of genetic structural motifs that affect protein expression in yeast will eventually
-allow the process of protein synthesis for the development of _human_ therapeutics (such as insulin) to
-be greatly improved with respect to time, cost, environmental consciousness and efficiency.
+Better understanding of genetic structural motifs that affect protein expression in yeast will eventually allow the development of biotherapeutics (such as insulin) to be greatly improved with respect to time, cost, environmental consciousness and efficiency.
  

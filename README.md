@@ -102,8 +102,13 @@ Now you have installed our package and downloaded the raw data, you are ready to
             |--context.py
         |---models
         	  |---1d_cnn
+        	      |---saved_models
+        	          |--1d_cnn_classifier_onehot.hdf5
+        	          |--1d_cnn_parallel_onehot.hdf5
+        	          |--1d_cnn_sequential_onehot.hdf5
         	      |--1D_CNN_builder.ipynb
         	      |--context.py
+        	      |--native_sample.txt
         	  |---1d_loccon
         	      |--1d_locally_connected.ipynb
         	      |--context.py
@@ -142,7 +147,7 @@ Now you have installed our package and downloaded the raw data, you are ready to
 ----
 ### Contributions
 
-Any contributions to the project are warmly welcomed! If you discover any bugs, please report them in the [issues section](https://github.com/emissible/SPEEDCOM/issues) of this repository and we'll work to sort them out as soon as possible. If you have data that you think will be good to train our model on, please contact one of the authors.
+Any contributions to the project are warmly welcomed! If you discover any bugs, please report them in the [issues section](https://github.com/yeastpro/ExpressYeaself/issues) of this repository and we'll work to sort them out as soon as possible. If you have data that you think will be good to train our model on, please contact one of the authors.
 
 ----
 ### References
