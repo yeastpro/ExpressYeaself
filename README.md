@@ -11,27 +11,31 @@ Authors: **Joe Abbott**, **Keertana Krishnan**, **Guoyao Chen**.
 
 _ExpressYeaself_  is an open source scientific software package that aims to quickly and accurately predict the contribution a promoter sequence has on the expression of genes in **_Saccharomyces cerevisiae_** (or '_Brewer's yeast_ '). 
 
-This will allow the costly and time-consuming trial-and-error processes in the development and synthesis of biotherapeutics to be streamlined. Our goal is to use machine learning and data mining to make **recommendations** on which promoter sequences are likely to contribute to high levels of gene expression, and which **are not**.  
+This will allow the **costly** and **time-consuming** trial-and-error processes in the development and synthesis of biotherapeutics to be streamlined. Our goal is to use machine learning and data mining to make **recommendations** on which promoter sequences are likely to contribute to high levels of gene expression, and which **are not**.  
 
 For further details on the scientific background of our project and back-end operation of our package, please see our [use cases](https://github.com/yeastpro/ExpressYeaself/blob/master/doc/use_cases.md).
 
 ----
 ### Current Features
 
-1. [Raw data](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE104878)<sup>1</sup> consisting of ~ 62 million sequences and their associated expression levels, can be **processed** in an automated and highly **streamlined** manner, according to a large number of **tunable parameters**.
+1. [Raw data](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE104878)<sup>1</sup> consisting of ~ 62 million sequences and their associated expression levels, can be processed in an **automated**, **efficient**, and **highly tunable** way, according to a large number of processing parameters.
 
-2. Processed data can be manipulated for input into our **neural networks** by either **_one-hot encoding_** or **_embedding_**.
 
-3. **Three different models** can then be trained on this encoded data:
+2. Processed data is manipulated for input into our **neural networks** by **_one-hot encoding_**. This allows relationships between motifs within nucleotide sequences - and the effect they have on the expression level - to be learned on a deep level.
+
+3. **Three different models** have been trained on this encoded data:
 	* 1-dimensional convolutional neural network (**1DCNN**)
 	* 1-dimensional locally connected network (**1DLOCCON**)
 	* Long-Short-Term Memory (**LSTM**), a type of recurrent neural network.
 
-3. These trained models can then be used to **make predictions** on the extent to which a promoter sequence will contribute to a gene's expression level.
+3. These trained models can then be used to **make predictions** on the extent to which each promoter sequence in a file will contribute to a gene's expression level. 
+
+This means a large input file of promoter sequences with potential for use in biotherapeutic drug design can be rapidly evaluated for their likelihood of being effective.
 
 
 ----
 ### Future Work
+
 * We are currently in the process of developing some data mining tools to identify and extract so called **_magic motifs_** from our raw data. 
 * These are shorter nucleotide sequences that are present within complete promoter sequences that contribute to the **highest** expression levels.
 * Identifying and extracting these will allow us to make **recommendations** on what motifs a promoter sequence should contain in order to result in a high expression level of the gene being promoted.  
@@ -107,6 +111,8 @@ Now you have installed our package and downloaded the raw data, you are ready to
         	  |---lstm
         	      |--context.py
         	      |--lstm_model_function.py
+        	  |---prediction_results
+        	      |--__init__.py
         |---tests
             |--__init__.py
             |--context.py
