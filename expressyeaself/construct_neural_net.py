@@ -15,7 +15,9 @@ ROOT_DIR = os.getcwd()[:os.getcwd().rfind('Express')] + 'ExpressYeaself/'
 MODELS_TO_USE = ['1d_cnn_classifier',
                  '1d_cnn_sequential',
                  '1d_cnn_parallel',
-                 '1d_loccon_classifier']
+                 '1d_loccon_classifier',
+                 'lstm_sequential_2d',
+                 'lstm_sequential_3d']
 
 
 def plot_results(hist):
