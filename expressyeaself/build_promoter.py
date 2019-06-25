@@ -12,6 +12,8 @@ from expressyeaself.utilities import (separate_seq_and_el_data as
 from expressyeaself.utilities import smart_open as smart_open
 import os
 
+ROOT_DIR = os.getcwd()[:os.getcwd().rfind('Express')] + 'ExpressYeaself/'
+
 
 def remove_flanks_from_seq(oligo_seq, scaffold_type='pTpA'):
     """
@@ -107,7 +109,7 @@ def remove_flanks_from_all_seqs(input_seqs, scaffold_type='pTpA'):
     time_stamp = get_time_stamp()  # Get unique time stamp for file naming
     relative_path = ('example/' + scaffold_type + '_data/' + time_stamp +
                      '_' + scaffold_type + '_seqs_flanks_removed.txt')
-    absolute_path = os.path.join(os.getcwd(), relative_path)
+    absolute_path = os.path.join(ROOT_DIR, relative_path)
     # Opening the input and output files.
     infile = smart_open(input_seqs, 'r')
     outfile = smart_open(absolute_path, 'w')
@@ -197,14 +199,14 @@ def insert_all_seq_into_one_scaffold(input_seqs, scaffold_type='pTpA'):
     time_stamp = get_time_stamp()  # get time stamp for unique file naming
     relative_path = ('example/' + scaffold_type + '_data/' + time_stamp +
                      '_' + scaffold_type + '_seqs_inserted_into_scaffold.txt')
-    absolute_path = os.path.join(os.getcwd(), relative_path)
+    absolute_path = os.path.join(ROOT_DIR, relative_path)
     # Open input and output files
     infile = smart_open(input_seqs, 'r')
     outfile = smart_open(absolute_path, 'w')
     # Retrieve the scaffold sequence
     scaff_directory = 'example/' + scaffold_type + '_data/'
     scaff_rel_path = scaff_directory + scaffold_type + '_scaffold.txt'
-    scaff_abs_path = os.path.join(os.getcwd(), scaff_rel_path)
+    scaff_abs_path = os.path.join(ROOT_DIR, scaff_rel_path)
     scaff_file = smart_open(scaff_abs_path, 'r')
     scaffold = scaff_file.readline().replace('\n', '')
     # Insert sequences into scaffold and write data to output file

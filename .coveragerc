@@ -1,2 +1,2 @@
 [run]
-omit = example/*, expressyeaself/tests/*, expressyeaself/models/* expressyeaself/construct_neural_net.py 
+omit = example/*, expressyeaself/tests/*, expressyeaself/models/*, expressyeaself/construct_neural_net.py, expressyeaself/version.py 

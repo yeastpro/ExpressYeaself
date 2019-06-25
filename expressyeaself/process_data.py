@@ -9,6 +9,8 @@ from expressyeaself.utilities import smart_open as smart_open
 import os
 import time as t
 
+ROOT_DIR = os.getcwd()[:os.getcwd().rfind('Express')] + 'ExpressYeaself/'
+
 
 def process_raw_data(input_seqs, scaffold_type=None, percentile=None,
                      binarize_els=True, homogeneous=False, deflank=True,
@@ -133,7 +135,7 @@ def process_raw_data(input_seqs, scaffold_type=None, percentile=None,
     # Define final output file path
     time_stamp = get_time_stamp()
     relative_path = 'example/processed_data/' + time_stamp
-    processed_data = os.path.join(os.getcwd(), relative_path)
+    processed_data = os.path.join(ROOT_DIR, relative_path)
     # Create log file to write reports to
     if report_loss or report_times:
         report = smart_open(processed_data + '_process_report' + '.txt', 'w')

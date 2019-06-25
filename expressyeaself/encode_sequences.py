@@ -157,7 +157,7 @@ def one_hot_encode_sequence(promoter_seq):
     Returns:
     -----
         one_hot_seq (str) -- the One-Hot encoded nucleotide sequence
-        as a 2D array.
+        as numpy 2d array.
     """
     # Assertions
     assert isinstance(promoter_seq, str), 'TypeError: Input nucleotide \
@@ -173,10 +173,10 @@ def one_hot_encode_sequence(promoter_seq):
         raise Exception('Input nucleotide sequence contains a non ATGC or \
         "N" or "P" at string indices %s' % (invalid_indices))
     # Functionality
-    one_hot_seq = []
-    for nuc in promoter_seq:
-        nuc = nuc.upper()
-        one_hot_seq.append(MAPPING[nuc])
+    one_hot_seq = np.zeros((len(promoter_seq), 5)).astype(int)
+    for i in range(0, len(promoter_seq)):
+        nuc = promoter_seq[i].upper()
+        one_hot_seq[i] = MAPPING[nuc]
 
     return one_hot_seq
 
